@@ -38,18 +38,24 @@ The Spriteclip object is exposed as a jQuery plugin but all logic is kept in a c
 If you instantiate via the plugin, the instance is kept in the jQuery elements data-spriteClip attribute.
 
 	var options = {
-	        totalFrames: 6, 		//Required
-	        frameRate: 2, 			//Optional
-	        frameWidth: 35, 		//Optional
-	        frameHeight: 100, 		//Optional
-	        layout: "horizontal", 	//Optional
-	        stops: [] 				//Optional
+	        totalFrames: 6, 		//Required - the number of frames in the sprite
+	        frameRate: 30, 			//Optional - the framerate the clip should play at
+	        frameWidth: 35, 		//Optional - width of each frame - defaults to elements width, padding and border
+	        frameHeight: 100, 		//Optional - height of each frame - defaults to elements height, padding and border
+	        layout: "horizontal", 	//Optional - the layout of the sprite
+	        stops: [] 				//Optional - an array of frames to stop at
 	     },
 	     clip;
 	 
 	//Call the plugin
 	$("#domElement").spriteClip(options);
-	clip = $("#bernard").data("spriteClip");
+	clip = $("#domElement").data("spriteClip");
 	 
 	//Equivalent to:
 	clip = new SpriteClip(document.getElementById("bernard"), options);
+
+Performance:
+-----------
+- Only 1 timeout pr. frameRate:
+When a clip starts to play, it is registered in a central timeout manager, which is responsible for updating all registered clips
+This means that if we have 5 clips playing at 20 fps, and 5 at 30 fps, only 2 timeouts are running. One every 20th of a second and one every 30th.

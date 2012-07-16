@@ -40,7 +40,9 @@
         ENTER_FRAME: "enterFrame"
     };
 
-
+    /**
+        @constructor
+    */
     function Timeout (frameRate) {
         this._frameRate = frameRate;
         this.clips = [];
@@ -54,13 +56,14 @@
 
 
         /**
-            @public     
+            @public
             @description    Register a clip for rendering at the instances framerate - start the timeout if clip was the first to be added
         */
         register: function (clip) {
             
             this.clips.push(clip);
 
+            //Start the timeout if the clip is the first to be registered
             if(this.clips.length === 1) {
                 this._start();
             }
@@ -69,16 +72,15 @@
         
 
         /**
-            @public     
+            @public
             @description    Unregister a clip for rendering - will stop the timeout if the clip was the last remaining
         */
         unregister: function (clip) {
             
-
             var clips = this.clips,
                 i = clips.length - 1;
                 
-            //Looks for the clip and remove it
+            //Look for the clip and remove it if found
             for ( ; i >= 0 ; i-- ) {
                 if (clips[i] === clip) {
                     clips.splice(i, 1);
@@ -94,7 +96,7 @@
 
 
         /**
-            @private     
+            @private
             @description    Start a timeout at the instance's framerate
         */
         _start: function () {
@@ -105,7 +107,7 @@
 
 
         /**
-            @private     
+            @private
             @description    Start a timeout at the instance's framerate - will only start if no timeout is currently running
         */
         _stop: function () {
@@ -117,8 +119,8 @@
 
 
         /**
-            @private     
-            @description    
+            @private
+            @description    The loop that is responsible for updating all registered clips
         */
         _update: function () {
             
@@ -153,7 +155,10 @@
 
 
     /**
-        @description    
+        @static
+        @description    Because we only want 1 timeout for any number of clips that are running at the same framerate,
+                        we handle the updating of playing clips in this manager so for any number of clips that are running the same
+                        framerate, only 1 timeout will be running.
     */
     var TimeoutManager = (function () {
         
@@ -161,7 +166,7 @@
 
         /**
             @public
-            @description    
+            @description    Registers a clip for updating
         */
         function register (clip) {
            
@@ -179,7 +184,7 @@
 
         /**
             @public
-            @description
+            @description    Unregister a clip from updating
             @param {SpriteClip} - The clip to unregister
         */
         function unregister (clip) {
@@ -212,6 +217,7 @@
 
 
     /**
+        @constructor
         @param {HTMLElement} elem - The containing DOM node
         @param {Object} [options] - An object literal with properties that will override any default settings of same name
     */
@@ -222,22 +228,25 @@
             return new SpriteClip(element, options);
         }
 
+        //Save a reference to the dom element and jquery-wrapped dom element
         this.elem = element;
         this.$elem = $(element);
+
+        //The element HAS an eventdispatcher instead of BEING an eventdispatcher. We use a dummy jQuery elemt for this because
+        //jQuery elements already have a great event system (.bind, .on, .off, .triggerHandler, .trigger etc.)
         this.$dispatcher = $("<div />");
 
         //Merge passed options into default settings (deep merge so references are wiped)
         this._settings = $.extend(true, {}, this._settings, options);
 
-        //Expose totalFrames and frameRate
+        //Expose totalFrames and frameRate - note that these will be READY_ONLY and changing them
+        //will not affect the framerate at which the instance plays
         this.totalFrames = this._settings.totalFrames;
         this.frameRate = this._settings.frameRate;
 
         //Use frameWidth and-height options if passed or default to the elements width/height
         this.frameWidth = this._settings.frameWidth || this.$elem.width() + parseInt(this.$elem.css("padding-left"), 10) + parseInt(this.$elem.css("padding-right"), 10);
         this.frameHeight = this._settings.frameHeight || this.$elem.height() + parseInt(this.$elem.css("padding-top"), 10) + parseInt(this.$elem.css("padding-bottom"), 10);
-
-        
 
         //Validate input to make sure we can work with what we've got
         this._validateInitialInput();
@@ -246,10 +255,11 @@
     
     SpriteClip.prototype = {
         
-        //Public - init stuff we are going to need as undefined for performance
+        //Public - define stuff we are going to need as undefined for performance
         elem: undefined,
         $elem: undefined,
         $dispatcher: undefined,
+
         totalFrames: undefined,
         frameRate: undefined,
         currentFrame: 1,
@@ -263,7 +273,7 @@
 
         _settings: {
             /**
-                @property {Integer} totalFrames - Required - The number of frames that sprite and thereby the animation contains. All frames should be equally spaced in the sprite.
+                @property {Integer} totalFrames - Required - The number of frames that the sprite and thereby the animation contains. All frames must be equally spaced in the sprite.
             */
             totalFrames: undefined,
             
@@ -439,7 +449,7 @@
         
 
         /**
-            @public     
+            @public
             @description                    Plays the animation backwards
         */
         rewind: function () {

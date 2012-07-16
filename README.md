@@ -57,5 +57,5 @@ If you instantiate via the plugin, the instance is kept in the jQuery elements d
 Performance:
 -----------
 - Only 1 timeout pr. frameRate:
-When a clip starts to play, it is registered in a central timeout manager, which is responsible for updating all registered clips
+When a clip is played/stopped, it is registered/unregistered in a central timeout manager, which is responsible for updating all playing clips
 This means that if we have 5 clips playing at 20 fps, and 5 at 30 fps, only 2 timeouts are running. One every 20th of a second and one every 30th.

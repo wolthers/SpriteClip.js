@@ -33,5 +33,32 @@ Once instantiated, you get access to an instance with familiar methods and prope
 	clip.rewindtoAndStop();
 
 
-Usage:
+Instantiation:
 -----------
+	var options = {
+	        //Required - {Number}
+	        totalFrames: 6,
+	 
+	        //Optional - {Number} - Default = 30 - The frames per second that the animation plays - Cannot be changed after instantiation
+	        frameRate: 2,
+	 
+	        //Optional - {Number} - Default = {elements width + padding without border} - The width of each frame.
+	        frameWidth: 35,
+	 
+	        //Optional - {Number} - Default = {elements height + padding without border} - The height of each frame
+	        frameHeight: 100,
+	 
+	        //Optional - {String} - Default = "horizontal" - Must be either "horizontal" or "vertical" - Determines which way the sprite is laid out
+	        layout: "horizontal",
+	 
+	        //Optional - {Array}  - Default = [] - An array of frame numbers to stop at - can be set after instantiation with the stops() method
+	        stops: []
+	     },
+	     bernard;
+	 
+	//Call the plugin
+	$("#bernard").spriteClip(options);
+	bernard = $("#bernard").data("spriteClip");
+	 
+	//Equivalent to:
+	bernard = new SpriteClip(document.getElementById("bernard"), options);

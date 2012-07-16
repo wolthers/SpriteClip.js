@@ -1,5 +1,5 @@
 spriteclip.js
-=============
+====
 
 Frame-by-frame animations in JS made easy by using an interface similar to AS3's MovieClip
 
@@ -13,24 +13,24 @@ spriteclip.js is a jQuery plugin that makes it easy to make snazzy frame-by-fram
 
 Once instantiated, you get access to an instance with familiar methods and properties like:
 
-clip.play();
-clip.stop();
-clip.gotoAndPlay();
-clip.gotoAndStop();
-clip.nextFrame();
-clip.prevFrame();
+	clip.play();
+	clip.stop();
+	clip.gotoAndPlay();
+	clip.gotoAndStop();
+	clip.nextFrame();
+	clip.prevFrame();
 
-clip.currentFrame
-clip.isPlaying
-clip.frameRate
+	clip.currentFrame
+	clip.isPlaying
+	clip.frameRate
 
 
 .. Plus extra methods like:
 
-clip.playtoAndStop();
-clip.gotoAndRewind();
-clip.rewind();
-clip.rewindtoAndStop();
+	clip.playtoAndStop();
+	clip.gotoAndRewind();
+	clip.rewind();
+	clip.rewindtoAndStop();
 
 
 Usage:

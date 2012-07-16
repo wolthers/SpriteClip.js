@@ -33,7 +33,10 @@ Once instantiated, you get access to an instance with familiar methods and prope
 
 Instantiation:
 -----------
-The Spriteclip object is exposed as a jQuery plugin but all logic is kept in a classic object. This means that you can choose to instantiate either via the plugin or via the SpriteClip constructor. If you instantiate via the plugin, the instance is kept in the jQuery elements data-spriteClip attribute.
+The Spriteclip object is exposed as a jQuery plugin but all logic is kept in a classic object. This means that you can choose to instantiate either via the plugin or via the SpriteClip constructor. 
+
+If you instantiate via the plugin, the instance is kept in the jQuery elements data-spriteClip attribute.
+
 	var options = {
 	        totalFrames: 6, 		//Required
 	        frameRate: 2, 			//Optional

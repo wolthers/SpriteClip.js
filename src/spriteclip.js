@@ -1,5 +1,5 @@
 /**!
-    Copyright (C) 2011-2012 Michael Wolthers Nielsen
+    Copyright (C) 2012 Michael Wolthers Nielsen, http://moredots.dk
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
 /**!
     @author - Michael Wolthers Nielsen @MichaelWolthers http://moredots.dk
     @contributors - Kristoffer Kjelde @stofferk munkey.dk
-    @description - spriteclip.js is a jQuery plugin that exposes a class with an interface similar to MovieClip of ActionScript 3.0
+    @description - SpriteClip jQuery plugin that provides an object with an interface similar to the ActionScript 3.0 MovieClip
     @version - 1.0
     @TODO:
     - Fix backgroundposition in firefox and in ie7 (firefox doesnt recognize background-position-x, ie7 doesn't recognize background-position)
@@ -38,7 +38,7 @@
             @property {String} ENTER_FRAME - Is dispatched whenevery a new frame is shown
         */
         ENTER_FRAME: "enterFrame"
-    }
+    };
 
 
     function Timeout (frameRate) {
@@ -134,7 +134,7 @@
                 //Determine if we play or rewind - it's ok to access private properties on the clip because the manager is not exposed
                 if (clip._direction === 1) {
                     clip.nextFrame();
-                } 
+                }
                 else {
                     clip.prevFrame();
                 }
@@ -149,7 +149,7 @@
             this._timeout = setTimeout($.proxy(this._update, this), 1000 / this._frameRate);
         }
         
-    }
+    };
 
 
     /**
@@ -179,7 +179,7 @@
 
         /**
             @public
-            @description    
+            @description
             @param {SpriteClip} - The clip to unregister
         */
         function unregister (clip) {
@@ -204,15 +204,15 @@
         return {
             register: register,
             unregister: unregister
-        }
+        };
 
-    }())
+    }());
 
 
 
 
     /**
-        @param {HTMLElement} elem - The containing DOM node 
+        @param {HTMLElement} elem - The containing DOM node
         @param {Object} [options] - An object literal with properties that will override any default settings of same name
     */
     function SpriteClip (element, options) {
@@ -221,7 +221,7 @@
         if(!(this instanceof SpriteClip)) {
             return new SpriteClip(element, options);
         }
-        
+
         this.elem = element;
         this.$elem = $(element);
         this.$dispatcher = $("<div />");
@@ -234,15 +234,15 @@
         this.frameRate = this._settings.frameRate;
 
         //Use frameWidth and-height options if passed or default to the elements width/height
-        this.frameWidth = this._settings.frameWidth || this.$elem.width() + parseInt(this.$elem.css("padding-left")) + parseInt(this.$elem.css("padding-right"));
-        this.frameHeight = this._settings.frameHeight || this.$elem.height() + parseInt(this.$elem.css("padding-top")) + parseInt(this.$elem.css("padding-bottom"));
+        this.frameWidth = this._settings.frameWidth || this.$elem.width() + parseInt(this.$elem.css("padding-left"), 10) + parseInt(this.$elem.css("padding-right"), 10);
+        this.frameHeight = this._settings.frameHeight || this.$elem.height() + parseInt(this.$elem.css("padding-top"), 10) + parseInt(this.$elem.css("padding-bottom"), 10);
 
         
 
         //Validate input to make sure we can work with what we've got
         this._validateInitialInput();
 
-    };
+    }
     
     SpriteClip.prototype = {
         
@@ -263,7 +263,7 @@
 
         _settings: {
             /**
-                @property {Integer} totalFrames - Required - The number of frames that sprite and thereby the animation contains. All frames should be equally spaced in the sprite. 
+                @property {Integer} totalFrames - Required - The number of frames that sprite and thereby the animation contains. All frames should be equally spaced in the sprite.
             */
             totalFrames: undefined,
             
@@ -300,7 +300,7 @@
             @public
             @description                    Setter for the stops array - overrides this._settings.stops if passed
             @param {Array} [stops]          Optional - An array of frames to stop at
-            @returns                        Returns a read only clone of _settings.stops 
+            @returns                        Returns a read only clone of _settings.stops
         */
         stops: function (stops) {
             
@@ -382,7 +382,7 @@
         */
         rewindToAndStop: function (frame) {
             this._validateFrameInput(frame);
-            this.play(frame, -1)
+            this.play(frame, -1);
         },
 
 
@@ -398,7 +398,7 @@
             } else {
                 this.currentFrame = 1;
             }
-            this._showFrame(this.currentFrame); 
+            this._showFrame(this.currentFrame);
         },
         
         
@@ -421,7 +421,7 @@
         
         /**
             @public
-            @description                    
+            @description
             @param {Number} [stopAt]        Optional - The frame the animation should stop at
             @param {Number} [direction=1]   Optional - The direction the animation should play. Defaults to 1 (forward) if anything but -1 is passed
         */
@@ -431,7 +431,7 @@
             this.stop();
 
             this._stopAt = stopAt;
-            this._direction = direction === -1 ? -1 : 1; 
+            this._direction = direction === -1 ? -1 : 1;
             TimeoutManager.register(this);
             this.isPlaying = true;
         },
@@ -442,7 +442,7 @@
             @public     
             @description                    Plays the animation backwards
         */
-        rewind: function () {  
+        rewind: function () {
 
             this.play(undefined, -1);
         },
@@ -475,12 +475,12 @@
 
             if (this._settings.layout === "horizontal") {
                 distanceToMove = (frame - 1) * this.frameWidth;
-                x = -distanceToMove; 
-                y = parseInt(currentPositions[1]);
+                x = - distanceToMove;
+                y = parseInt(currentPositions[1], 10);
             }
             else {
                 distanceToMove = (frame - 1) * this.frameHeight;
-                x = parseInt(currentPositions[0]);
+                x = parseInt(currentPositions[0], 10);
                 y = -distanceToMove;
             }
 
@@ -526,10 +526,10 @@
         _validateFrameInput: function (frame) {
             
             if (typeof frame !== "number") {
-                throw new Error("Argument Error: argument \"frame\" must be a number.")
+                throw new Error("Argument Error: argument \"frame\" must be a number.");
             }
             if( frame < 1 || frame > this.totalFrames ) {
-                throw new Error("Argument Error: argument \"frame\" is out of bounds.")
+                throw new Error("Argument Error: argument \"frame\" is out of bounds.");
             }
         },
 
@@ -545,16 +545,16 @@
             if (this._settings.layout !== "vertical" && this._settings.layout !== "horizontal") {
                 throw new Error("options property \"layout\" must be either \"horizontal\" or \"vertical\".");
             }
-            if (isNaN(parseInt(this.frameRate))) {
-                throw new Error("options property \"frameRate\" must be parsable as an integer.")
+            if (isNaN(parseInt(this.frameRate, 10))) {
+                throw new Error("options property \"frameRate\" must be parsable as an integer.");
             }
             if (typeof this.totalFrames !== "number") {
                 throw new Error("options proberty \"totalFrames\" must be a number");
             }
             if (this._settings.layout === "horizontal" && isNaN(this.frameWidth)) {
-                throw new Error("this.frameWidth is not a number. Make sure this.$elem.width() is a Number when we instantiate or pass an explicit value in options.");        
+                throw new Error("this.frameWidth is not a number. Make sure this.$elem.width() is a Number when we instantiate or pass an explicit value in options.");
             }
-            else if (this._settings.layout === "vertical" && isNaN(this.frameHeight)) {    
+            else if (this._settings.layout === "vertical" && isNaN(this.frameHeight)) {
                 throw new Error("this.frameHeight is not a number. Make sure this.$elem.height() is a Number when we instantiate or pass an explicit value in options.");
             }
         }
@@ -573,11 +573,11 @@
 
         return this.each(function() {
             if ( ! $.data(this, "spriteClip") ) {
-                $(this).data("spriteClip", SpriteClip(this, options));
+                $(this).data("spriteClip", new SpriteClip(this, options));
             }
         });
 
-    }
+    };
     
     
 } (jQuery));

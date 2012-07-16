@@ -40,8 +40,8 @@ If you instantiate via the plugin, the instance is kept in the jQuery elements d
 	var options = {
 	        totalFrames: 6, 		//Required - the number of frames in the sprite
 	        frameRate: 30, 			//Optional - the framerate the clip should play at
-	        frameWidth: 35, 		//Optional - width of each frame - defaults to elements width, padding and border
-	        frameHeight: 100, 		//Optional - height of each frame - defaults to elements height, padding and border
+	        frameWidth: 35, 		//Optional - width of each frame - defaults to elements width and padding MINUS border
+	        frameHeight: 100, 		//Optional - height of each frame - defaults to elements height and padding MINUS border
 	        layout: "horizontal", 	//Optional - the layout of the sprite
 	        stops: [] 				//Optional - an array of frames to stop at
 	     },

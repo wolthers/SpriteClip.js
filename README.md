@@ -19,6 +19,7 @@ Once instantiated, you get access to an instance with familiar methods and prope
 	clip.prevFrame();
 
 	clip.currentFrame
+	clip.totalFrames
 	clip.isPlaying
 	clip.frameRate
 

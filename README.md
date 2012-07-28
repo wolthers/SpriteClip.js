@@ -20,17 +20,17 @@ Once instantiated, you get access to an instance with familiar methods and prope
 
 	clip.currentFrame
 	clip.totalFrames
-	clip.isPlaying
 	clip.frameRate
 
 
-.. Plus extra methods like:
-
+.. Plus extra sugar like:
+	
 	clip.playtoAndStop();
 	clip.gotoAndRewind();
 	clip.rewind();
 	clip.rewindtoAndStop();
 
+	clip.isPlaying
 
 Instantiation:
 -----------

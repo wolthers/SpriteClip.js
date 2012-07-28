@@ -115,6 +115,7 @@
                         <span class="frameHeight">instance.frameHeight: <span></span></span>
                         <span class="isPlaying">instance.isPlaying: <span></span></span>
                         <span class="frameRate">instance.frameRate: <span></span></span>
+                        <span class="currentDirection">instance.currentDirection: <span></span></span>
                     </p>
                 </div>
 
@@ -162,29 +163,31 @@
                 .find(".frameHeight span").text(bernard.frameHeight).end()
                 .find(".isPlaying span").text(bernard.isPlaying).end()
                 .find(".totalFrames span").text(bernard.totalFrames).end()
-                .find(".frameRate span").text(bernard.frameRate);
+                .find(".frameRate span").text(bernard.frameRate).end()
+                .find(".currentDirection span").text(bernard.currentDirection);
 
 
             //Update some stuff label every time the clip enters a new frame
             bernard.$dispatcher.on(SpriteClipEvent.ENTER_FRAME, function () {
                 
                 $("#demo-properties")
-                    .find(".currentFrame span").text(bernard.currentFrame);
+                    .find(".currentFrame span").text(bernard.currentFrame).end()
+                    .find(".currentDirection span").text(bernard.currentDirection);
 
                 $("#bernard-greyed").css("margin-left", - (bernard.currentFrame - 1) * bernard.frameWidth);
             });
 
             
-            bernard.$dispatcher.on(SpriteClipEvent.PLAY, function () {
-                console.log("play called")
+            bernard.$dispatcher.on(SpriteClipEvent.PLAYING, function () {
+                console.log("clip is playing")
                 $("#demo-properties")
                     .find(".isPlaying span").text(bernard.isPlaying);
 
             });
 
             
-            bernard.$dispatcher.on(SpriteClipEvent.STOP, function () {
-                console.log("stop called")
+            bernard.$dispatcher.on(SpriteClipEvent.STOPPED, function () {
+                console.log("clip is fully stopped")
                 $("#demo-properties")
                     .find(".isPlaying span").text(bernard.isPlaying);
 

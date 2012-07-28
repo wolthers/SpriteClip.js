@@ -9,7 +9,7 @@ Introduction:
 -------------
 spriteclip.js is a jQuery plugin that makes it easy to make snazzy frame-by-frame animations of an image sprite by emulating the functionality of the MovieClip class in ActionScript 3.0. 
 
-Once instantiated, you get access to an instance with familiar methods and properties like:
+Once instantiated, you get access to an instance with familiar methods, properties and events like:
 
 	clip.play();
 	clip.stop();
@@ -22,6 +22,7 @@ Once instantiated, you get access to an instance with familiar methods and prope
 	clip.totalFrames
 	clip.frameRate
 
+	SpriteClipEvent.ENTER_FRAME
 
 .. Plus extra sugar like:
 	
@@ -32,11 +33,14 @@ Once instantiated, you get access to an instance with familiar methods and prope
 
 	clip.isPlaying
 
-Instantiation:
+	SpriteClipEvent.PLAYING
+	SpriteClipEvent.STOPPED
+
+Usage:
 -----------
 The Spriteclip object is exposed as a jQuery plugin but all logic is kept in a classic object. This means that you can choose to instantiate either via the plugin or via the SpriteClip constructor. 
 
-If you instantiate via the plugin, the instance is kept in the jQuery elements data-spriteClip attribute.
+If you instantiate via the plugin, the instance is stored in the jQuery elements data-spriteClip attribute so it can easily be retrieved through the DOM.
 
 	var options = {
 	        totalFrames: 6, 		//Required - the number of frames in the sprite
@@ -54,6 +58,10 @@ If you instantiate via the plugin, the instance is kept in the jQuery elements d
 	 
 	//Equivalent to:
 	clip = new SpriteClip(document.getElementById("bernard"), options);
+
+For a more detailed demo, check out <a href="moredots.dk/projects/spriteclip/demos/apidemo.html" target="_blank">moredots.dk/projects/spriteclip/demos/apidemo.html</a>
+
+
 
 Performance:
 -----------

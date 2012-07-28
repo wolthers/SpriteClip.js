@@ -61,6 +61,7 @@ If you instantiate via the plugin, the instance is stored in the jQuery elements
 
 
 Events:
+-----------
 You subscribe to the instance's events through it's $dispatcher property. 
 	
 	ENTER_FRAME:

@@ -36,7 +36,7 @@ Once instantiated, you get access to an instance with familiar methods, properti
 	SpriteClipEvent.PLAYING
 	SpriteClipEvent.STOPPED
 
-Usage:
+Instantiation:
 -----------
 The Spriteclip object is exposed as a jQuery plugin but all logic is kept in a classic object. This means that you can choose to instantiate either via the plugin or via the SpriteClip constructor. 
 
@@ -58,6 +58,25 @@ If you instantiate via the plugin, the instance is stored in the jQuery elements
 	 
 	//Equivalent to:
 	clip = new SpriteClip(document.getElementById("bernard"), options);
+
+
+Events:
+You subscribe to the instance's events through it's $dispatcher property. 
+	
+	ENTER_FRAME:
+	clip.$dispatcher.on(SpriteClipEvent.ENTER_FRAME, function() {
+		//Stuff that should be done every time a new frame is shown
+	}):
+
+	PLAYING:
+	clip.$dispatcher.on(SpriteClipEvent.PLAYING, function() {
+		//Stuff that should be done when the clip starts playing
+	}):	
+
+	STOPPED:
+	clip.$dispatcher.on(SpriteClipEvent.STOPPEd, function() {
+		//Stuff that should be done when the clip stops playing
+	}):	
 
 For a more detailed demo, check out <a href="moredots.dk/projects/spriteclip/demos/apidemo.html" target="_blank">moredots.dk/projects/spriteclip/demos/apidemo.html</a>
 

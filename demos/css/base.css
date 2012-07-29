@@ -94,7 +94,12 @@ pre {
     margin: 0 !important;
     padding: 10px 0;
 }
-
+.syntaxhighlighter .gutter .line {
+	border-right: 0 none !important; 
+}
+.syntaxhighlighter .toolbar {
+	background: #ccc!important	;
+}
 iframe.snippet {
 	visibility: hidden;
 	border: 1px solid #ccc;

@@ -40,7 +40,7 @@ Once instantiated, you get access to an instance with familiar methods, properti
 
 Background:
 -------------
-The project was inspired by the neat rollovers on http://rallyinteractive.com, that prompted me to think that the reason that you almost never see these awesome yet relatively simple animations that were so common in the flash days must be that the tools for creating them in Javascript were none existant.
+The project was inspired by the neat rollovers on <a href="http://rallyinteractive.com" target="_blank">http://rallyinteractive.com</a>, that prompted me to think that the reason that you almost never see these awesome yet relatively simple animations that were so common in the flash days, must be that the tools for creating them in Javascript were none existant.
 
 I thought that a MovieClip class in Javascript would be a great base as that is the very first class you learn to work with in Flash and hence the learning curve would be flat for as many developers as possible. That is also why I have aimed to make an interface that is as consistent with the flash interface as possible and only added a few commonly used methods and properties like rewind() and isPlaying. Further additions can then easily be made in an class that inherits from SpriteClip.
 
@@ -78,7 +78,10 @@ Each instance HAS an eventdispatcher attached instead of BEING an eventdispatche
 		//Stuff that should be done every time a new frame is shown
 	}):
 
-For a more detailed demo of the API, check out <a href="http://moredots.dk/projects/spriteclip/demos/apidemo.html" target="_blank">moredots.dk/projects/spriteclip/demos/apidemo.html</a>
+Demos:
+-----------
+Detailed API demo: <a href="http://moredots.dk/projects/spriteclip/demos/apidemo.html" target="_blank">moredots.dk/projects/spriteclip/demos/apidemo.html</a>
+The rallyinteractive rollovers implemented in spriteclip.js: <a href="http://moredots.dk/projects/spriteclip/demos/demo1.html" target="_blank">moredots.dk/projects/spriteclip/demos/demo1.html</a>
 
 
 

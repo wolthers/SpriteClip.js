@@ -1,11 +1,10 @@
 spriteclip.js
 ====
 
-Frame-by-frame animations in JS made easy by using an interface similar to AS3's MovieClip
+Frame-by-frame animations in JS made easy by using an interface similar to AS3's MovieClip.
 
 
-
-Introduction:
+Overview:
 -------------
 spriteclip.js is a jQuery plugin that makes it easy to make snazzy frame-by-frame animations of an image sprite by emulating the functionality of the MovieClip class in ActionScript 3.0. 
 
@@ -35,6 +34,14 @@ Once instantiated, you get access to an instance with familiar methods, properti
 
 	SpriteClipEvent.PLAYING
 	SpriteClipEvent.STOPPED
+
+Background:
+-------------
+The project was inspired by the neat rollovers on http://beta.rallyinteractive.com, that prompted me to think that the reason that you almost never see these awesome yet relatively simple animations that were so common in the flash days must be that the tools for creating them in Javascript were none existant.
+
+I thought that a MovieClip class in Javascript would be a great base as that is the very interface thing you learn to work with in Flash and hence the learning curve would be flat for as many developers as possible. That is also why I have aimed to make an interface that is as consistent with the flash interface as possible and only added a few commonly used methods and properties like rewind() and isPlaying. Further additions can then easily be made in an class that inherits.
+
+
 
 Instantiation:
 -----------

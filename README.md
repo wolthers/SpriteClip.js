@@ -71,7 +71,7 @@ If you instantiate via the plugin, the instance is stored in the jQuery elements
 
 Events:
 -----------
-Each instance HAS an eventdispatcher attached instead of BEING an eventdispatcher. This means that you subscribe to the instance's events through it's $dispatcher property. The $dispatcher is nothing but a dummy jQuery element which we use because jQuery's event system works really well with methods like .on(), .off(), .trigger() and .triggerHandler() 
+Each instance HAS an eventdispatcher attached instead of BEING an eventdispatcher. This means that you subscribe to the instance's events through it's $dispatcher property. The $dispatcher is nothing but a dummy jQuery element that isn't attached to the DOM, which we use because jQuery has a great event system built in with methods like .on(), .off(), .trigger() and .triggerHandler() 
 	
 	//Events that can be subscribed to are ENTER_FRAME, STOPPED or PLAYING
 	clip.$dispatcher.on(SpriteClipEvent.ENTER_FRAME, function() {

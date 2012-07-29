@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" class="iframe-document">
+<head>
+    <meta charset="utf-8">
+    <title></title>   
+    
+    <link rel="stylesheet" href="syntaxhighlighter/styles/shCore.css"/>
+    <link rel="stylesheet" href="syntaxhighlighter/styles/shCoreDefault.css"/>  
+    <link rel="stylesheet" href="../css/base.css"/>
+</head>
+<body>
+
+    <div class="snippet">
+        <pre class="brush: js;">
+            //Instantiate and get the instance from the element's data-spriteClip property
+            var instance = $(".awesome-button").spriteClip({
+                totalFrames: 30,
+                frameRate: 60,
+                stops: [1, 30]
+            }).data("spriteClip");
+
+            //Equivalent to
+            //var instance = new SpriteClip($(".awesome-button").get(0), {
+            //    totalFrames: 19,
+            //    frameRate: 30,
+            //    stops: [1, 19]
+            //})
+            
+            instance.$elem.on("mouseover", function () {
+                instance.play();
+            })
+            .on("mouseout", function () {
+                instance.rewind();
+            });
+
+            instance.$dispatcher.on(SpriteClipEvent.ENTER_FRAME, function () {
+                $(".currentFrame span").text(instance.currentFrame);
+            });
+        </pre>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="syntaxhighlighter/scripts/shCore.js"></script>
+    <script src="syntaxhighlighter/scripts/shBrushJScript.js"></script>
+
+    <script>
+         SyntaxHighlighter.all();
+        
+        $(window).on("load", function() {  
+            console.log($(".snippet").height())
+            
+                $(parent.document).find("#snippet-1").height($(".snippet").height() + "px").css("visibility", "visible");
+            
+           
+        })
+
+    </script>
+
+</body>
+</html>

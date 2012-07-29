@@ -287,6 +287,9 @@
         //Validate input to make sure we can work with what we've got
         this._validateInitialInput();
 
+        //Return the jQuery element for chaining
+        return this.$elem;
+
     }
     
     SpriteClip.prototype = {

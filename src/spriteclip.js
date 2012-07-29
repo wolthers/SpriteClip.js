@@ -27,9 +27,9 @@
     @version - 1.02
 
     1.02
-        - Renamed SpriteClipEvent.PLAY to SpriteClipEvent.STOP to .PLAYING and .STOPPED and made sure that they are dispatched like so:
+        - Renamed SpriteClipEvent.PLAY and SpriteClipEvent.STOP to .PLAYING and .STOPPED and made sure that they are dispatched like so:
           STOPPED: when a clip is stopped completely or when a playing clip is told to play in a different direction
-          PLAYING: when a clip that isnt playing starts to play - including when a playing clip is told to play in a difference direction
+          PLAYING: when a clip that isnt playing starts to play - including when a playing clip is told to play in a different direction
         - Rewrote a lot of comments
 
     1.01

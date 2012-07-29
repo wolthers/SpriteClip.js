@@ -80,8 +80,8 @@ Each instance HAS an eventdispatcher attached instead of BEING an eventdispatche
 
 Demos:
 -----------
-Detailed API demo: <a href="http://moredots.dk/projects/spriteclip/demos/apidemo.html" target="_blank">moredots.dk/projects/spriteclip/demos/apidemo.html</a>
-The rallyinteractive rollovers implemented in spriteclip.js: <a href="http://moredots.dk/projects/spriteclip/demos/demo1.html" target="_blank">moredots.dk/projects/spriteclip/demos/demo1.html</a>
+- Detailed API demo: <a href="http://moredots.dk/projects/spriteclip/demos/apidemo.html" target="_blank">moredots.dk/projects/spriteclip/demos/apidemo.html</a>
+- The rallyinteractive rollovers implemented in spriteclip.js: <a href="http://moredots.dk/projects/spriteclip/demos/demo1.html" target="_blank">moredots.dk/projects/spriteclip/demos/demo1.html</a>
 
 
 

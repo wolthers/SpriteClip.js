@@ -1,0 +1,59 @@
+
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <meta charset="utf-8">
+        <title>spriteclip.js - Simple API demo</title>
+
+        <style>
+
+        body {
+            background-color: #f5f0eb;
+        }
+
+        .awesome-button {
+            display: block;
+            width: 60px;
+            height: 60px;
+            background: url("img/rally-button.png") no-repeat 0 0;
+        }
+            
+        </style>
+
+    </head>
+    <body>
+
+        <a class="awesome-button"></a>
+
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script src="../src/spriteclip.js"></script>
+
+        <script>
+
+            var instance = $(".awesome-button").spriteClip({
+                totalFrames: 19,
+                frameRate: 30,
+                stops: [1, 19]
+            }).data("spriteClip");
+
+            //Equivalent to
+            //var instance = new SpriteClip($(".awesome-button").get(0), {
+            //    totalFrames: 19,
+            //    stops: [1, 19]
+            //})
+
+            instance.$elem.on("mouseover", function () {
+                instance.play();
+            })
+            .on("mouseout", function () {
+                instance.rewind();
+            });
+
+
+        </script>
+
+
+    </body>
+</html>

@@ -42,7 +42,7 @@ Background:
 -------------
 The project was inspired by the neat rollovers on http://beta.rallyinteractive.com, that prompted me to think that the reason that you almost never see these awesome yet relatively simple animations that were so common in the flash days must be that the tools for creating them in Javascript were none existant.
 
-I thought that a MovieClip class in Javascript would be a great base as that is the very interface thing you learn to work with in Flash and hence the learning curve would be flat for as many developers as possible. That is also why I have aimed to make an interface that is as consistent with the flash interface as possible and only added a few commonly used methods and properties like rewind() and isPlaying. Further additions can then easily be made in an class that inherits.
+I thought that a MovieClip class in Javascript would be a great base as that is the very first class you learn to work with in Flash and hence the learning curve would be flat for as many developers as possible. That is also why I have aimed to make an interface that is as consistent with the flash interface as possible and only added a few commonly used methods and properties like rewind() and isPlaying. Further additions can then easily be made in an class that inherits.
 
 
 Instantiation:
@@ -71,22 +71,12 @@ If you instantiate via the plugin, the instance is stored in the jQuery elements
 
 Events:
 -----------
-You subscribe to the instance's events through it's $dispatcher property. 
+Each instance HAS an eventdispatcher attached instead of BEING an eventdispatcher. This means that you subscribe to the instance's events through it's $dispatcher property which is nothing but a dummy jQuery element that isn't attached to the DOM. 
 	
-	ENTER_FRAME:
+	//Events that can be subscribedENTER_FRAME, STOPPED or PLAYING
 	clip.$dispatcher.on(SpriteClipEvent.ENTER_FRAME, function() {
 		//Stuff that should be done every time a new frame is shown
 	}):
-
-	PLAYING:
-	clip.$dispatcher.on(SpriteClipEvent.PLAYING, function() {
-		//Stuff that should be done when the clip starts playing
-	}):	
-
-	STOPPED:
-	clip.$dispatcher.on(SpriteClipEvent.STOPPED, function() {
-		//Stuff that should be done when the clip stops playing
-	}):	
 
 For a more detailed demo of the API, check out <a href="moredots.dk/projects/spriteclip/demos/apidemo.html" target="_blank">moredots.dk/projects/spriteclip/demos/apidemo.html</a>
 

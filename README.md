@@ -8,7 +8,7 @@ Overview:
 -------------
 spriteclip.js is a jQuery plugin that makes it easy to make snazzy frame-by-frame animations like <a href="http://moredots.dk/projects/spriteclip/demos/demo1.html" target="_blank">this</a> by emulating the functionality of the MovieClip class in ActionScript 3.0.
 
-It works by animating the background-image property of a dom node where the "frames" are spaced out equally. Eg. if the sprite is laid out horizontally and each frame is 20px wide, frame 1 will be at background-position-x: 0 and frame 2 will be at background-position-x: -20px
+It works by animating the background-image property of a dom node where the "frames" are spaced out equally. Eg. if the sprite is laid out horizontally and each frame is 20px wide, frame 1 will be at background-position: 0 0 and frame 2 will be at background-position: -20px 0
 
 Once instantiated, you get access to an instance with familiar methods, properties and events like:
 
@@ -49,15 +49,15 @@ Instantiation:
 -----------
 The Spriteclip object is exposed as a jQuery plugin but all logic is kept in a classic object. This means that you can choose to instantiate either via the plugin or via the SpriteClip constructor. 
 
-If you instantiate via the plugin, the instance is stored in the jQuery elements data-spriteClip attribute so it can easily be retrieved through the DOM.
+If you instantiate via the plugin, the instance is stored in the jQuery elements data-spriteClip attribute so that later, it can easily be retrieved through the DOM.
 
 	var options = {
 	        totalFrames: 6, 		//Required - the number of frames in the sprite
 	        frameRate: 30, 			//Optional - the framerate the clip should play at
 	        frameWidth: 35, 		//Optional - width of each frame - defaults to elements width + padding - border
 	        frameHeight: 100, 		//Optional - height of each frame - defaults to elements height + padding - border
-	        layout: "horizontal", 	//Optional - the layout of the sprite
-	        stops: [] 				//Optional - an array of frames to stop at
+	        layout: "horizontal", 	//Optional - the layout of the sprite - "horizontal" or "vertical"
+	        stops: [] 				//Optional - an array of frames to always stop at - can be set with the stops method
 	     },
 	     clip;
 	 
@@ -66,7 +66,7 @@ If you instantiate via the plugin, the instance is stored in the jQuery elements
 	clip = $("#domElement").data("spriteClip");
 	 
 	//Equivalent to:
-	clip = new SpriteClip(document.getElementById("bernard"), options);
+	clip = new SpriteClip(document.getElementById("domElement"), options);
 
 
 Events:
@@ -76,7 +76,7 @@ Each instance HAS an eventdispatcher attached instead of BEING an eventdispatche
 	//Events that can be subscribed to are ENTER_FRAME, STOPPED and PLAYING
 	clip.$dispatcher.on(SpriteClipEvent.ENTER_FRAME, function() {
 		//Stuff that should be done every time a new frame is shown
-	}):
+	});
 
 Demos:
 -----------

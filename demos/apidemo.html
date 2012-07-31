@@ -177,24 +177,24 @@
             $("#demo-properties")
                 .find(".currentFrame span").text(bernard.currentFrame).end()
                 .find(".currentDirection span").text(bernard.currentDirection);
-
+            
             $("#bernard-greyed").css("margin-left", - (bernard.currentFrame - 1) * bernard.frameWidth);
         });
 
         
         bernard.$dispatcher.on(SpriteClipEvent.PLAYING, function () {
-            console.log("clip is playing")
             $("#demo-properties")
                 .find(".isPlaying span").text(bernard.isPlaying);
 
+            console.log("SpriteClipEvent.PLAYING fired");
         });
 
         
         bernard.$dispatcher.on(SpriteClipEvent.STOPPED, function () {
-            console.log("clip is fully stopped")
             $("#demo-properties")
                 .find(".isPlaying span").text(bernard.isPlaying);
 
+            console.log("SpriteClipEvent.STOPPED fired");
         });
         
         bernard.play();
@@ -210,7 +210,6 @@
         //bernard.stops([4]);
         //bernard.stops([4, 6]);
         //bernard.stops([]);
-
 
 
     </script>

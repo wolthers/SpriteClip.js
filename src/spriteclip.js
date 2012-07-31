@@ -54,14 +54,14 @@
         /**
             @property {String} PLAYING - Is dispatched by each clip when it starts to play
                                          A special case is when a playing clip is told to play a different direction - then it will
-                                         Dispatch SpriteClipEvent.STOPPED followed by SpriteClipEvent.PLAYING
+                                         dispatch SpriteClipEvent.STOPPED followed by SpriteClipEvent.PLAYING
         */
         
         PLAYING: "playing",
         /**
             @property {String} STOPPED - Is dispatched by each clip when it stops playing
                                          A special case is when a playing clip is told to play a different direction - then it will
-                                         Dispatch SpriteClipEvent.STOPPED followed by SpriteClipEvent.PLAYING
+                                         dispatch SpriteClipEvent.STOPPED followed by SpriteClipEvent.PLAYING
         */
         STOPPED: "stopped"
     };
@@ -272,11 +272,10 @@
         //Expose totalFrames
         this.totalFrames = this._settings.totalFrames;
 
-        //Expose frameRate - NB: Property is considered READ_ONLY - Setting frameRate is currently only possible during instantiation and changing
-        //This property will not affect the fps at which the clip plays
+        //Expose frameRate - NB: Property is considered READ_ONLY - Changing will not affect the fps at which the clip plays
         this.frameRate = this._settings.frameRate;
 
-        //Expose layout - NB: Property is considered READ_ONLY - Setting layout after instantiation will not affect the layout
+        //Expose layout - NB: Property is considered READ_ONLY - Changing layout after instantiation will not affect
         this.layout = this._settings.layout;
 
 
@@ -628,7 +627,7 @@
     
     
     
-    //Expose on window in case we want to instantiate "normally" instead of via the plugin
+    //Expose on window in case we want to instantiate via the SpriteClip constructor instead of via the plugin
     window.SpriteClip = SpriteClip;
     window.SpriteClipEvent = SpriteClipEvent;
 

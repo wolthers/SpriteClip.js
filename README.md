@@ -1,4 +1,4 @@
-spriteClip.js
+SpriteClip.js
 ====
 
 Frame-by-frame animations in JS made easy by using an interface similar to AS3's MovieClip.
@@ -6,7 +6,7 @@ Frame-by-frame animations in JS made easy by using an interface similar to AS3's
 
 Overview:
 -------------
-spriteClip.js is a jQuery plugin that makes it easy to make snazzy frame-by-frame animations like <a href="http://moredots.dk/projects/spriteclip/demos/demo1.html" target="_blank">this</a> by emulating the functionality of the MovieClip class in ActionScript 3.0.
+SpriteClip.js is a jQuery plugin that makes it easy to make snazzy frame-by-frame animations like <a href="http://moredots.dk/projects/spriteclip/demos/demo1.html" target="_blank">this</a> by emulating the functionality of the MovieClip class in ActionScript 3.0.
 
 It works by animating the background-image property of a dom node where the "frames" are spaced out equally. Eg. if the sprite is laid out horizontally and each frame is 20px wide, frame 1 will be at background-position: 0 0 and frame 2 will be at background-position: -20px 0
 
@@ -49,7 +49,7 @@ Instantiation:
 -----------
 The SpriteClip object is exposed as a jQuery plugin but all logic is kept in a classic object. This means that you can choose to instantiate either via the plugin or via the SpriteClip constructor. 
 
-If you instantiate via the plugin, the instance is stored in the jQuery elements data-spriteClip attribute so that later, it can easily be retrieved through the DOM.
+If you instantiate via the plugin, the instance is stored in the jQuery elements data-spriteClip attribute so that later, it can easily be retrieved through the DOM. Note the lowercase s.
 
 	var options = {
 	        totalFrames: 6, 		//Required - the number of frames in the sprite

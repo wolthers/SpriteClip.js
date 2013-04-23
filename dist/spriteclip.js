@@ -1,3 +1,217 @@
+/**
+    Changelog:
+    1.02
+        - Renamed SpriteClipEvent.PLAY and SpriteClipEvent.STOP to .PLAYING and .STOPPED and made sure that they are dispatched like so:
+          STOPPED: when a clip is stopped completely or when a playing clip is told to play in a different direction
+          PLAYING: when a clip that isnt playing starts to play - including when a playing clip is told to play in a different direction
+        - Rewrote a lot of comments
+
+    1.01
+        - Changed rewindToAndStop method name to rewindtoAndStop for case consistency (like as3 gotoAndStop)
+        - Changed playToAndStop method name to playtoAndStop for case consistency (like as3 gotoAndStop)
+        - Added a public read only property for layout - either "horizontal" or "vertical" that matches what was passed in via settings
+        - Added event types PLAY and STOP that are dispatched when play() and stop() are called
+*/
+(function ($) {
+    
+    "use strict";
+    
+    var SpriteClipEvent = {
+        
+        /**
+            @property {String} ENTER_FRAME - Is dispatched just after the background-position of a clip is updated
+        */
+        ENTER_FRAME: "enterFrame",
+        
+        /**
+            @property {String} PLAYING - Is dispatched by each clip when it starts to play
+                                         A special case is when a playing clip is told to play a different direction - then it will
+                                         dispatch SpriteClipEvent.STOPPED followed by SpriteClipEvent.PLAYING
+        */
+        
+        PLAYING: "playing",
+        /**
+            @property {String} STOPPED - Is dispatched by each clip when it stops playing
+                                         A special case is when a playing clip is told to play a different direction - then it will
+                                         dispatch SpriteClipEvent.STOPPED followed by SpriteClipEvent.PLAYING
+        */
+        STOPPED: "stopped"
+    };
+
+    /**
+        @constructor
+        @description        Represents a timeout that runs at a given framerate
+    */
+    function Timeout (frameRate) {
+        this._frameRate = frameRate;
+        this.clips = [];
+    }
+
+    Timeout.prototype = {
+        
+        clips: undefined,
+        _frameRate: undefined,
+        _timeout: undefined,
+
+
+        /**
+            @public
+            @description    Register a clip for rendering at the instances framerate - start the timeout if clip was the first to be added
+        */
+        register: function (clip) {
+            
+            this.clips.push(clip);
+            if(this.clips.length === 1) {
+                this._start();
+            }
+
+        },
+        
+
+        /**
+            @public
+            @description    Unregister a clip for rendering - will stop the timeout if the clip was the last remaining
+        */
+        unregister: function (clip) {
+            
+
+            var clips = this.clips,
+                i = clips.length - 1;
+                
+            //Looks for the clip and remove it
+            for ( ; i >= 0 ; i-- ) {
+                if (clips[i] === clip) {
+                    clips.splice(i, 1);
+                    break;
+                }
+            }
+
+            //If removed clip was the last, kill the timeout
+            if(clips.length === 0) {
+                this._stop();
+            }
+        },
+
+
+        /**
+            @private
+            @description    Start a timeout at the instance's framerate
+        */
+        _start: function () {
+
+            this._timeout = setTimeout($.proxy(this._update, this), 1000 / this._frameRate);
+            
+        },
+
+
+        /**
+            @private
+            @description    Stops a timeout at the instance's framerate
+        */
+        _stop: function () {
+
+            //Stop and delete the timeout
+            clearTimeout(this._timeout);
+            delete this._timeout;
+        },
+
+
+        /**
+            @private
+            @description    The loop that is responsible for updating all registered clips
+        */
+        _update: function () {
+            
+            var clips = this.clips,
+                clip,
+                i = clips.length - 1;
+
+            //Render all the clips
+            for ( ; i >= 0 ; i-- ) {
+
+                //Save a refence to the current clip for performance
+                clip = clips[i];
+                
+                //Determine if clip is playing forwards or backwards
+                if (clip.currentDirection === 1) {
+                    clip.nextFrame();
+                }
+                else {
+                    clip.prevFrame();
+                }
+
+                //Check if we should stop at current frame - it's ok to access "private" properties on the clip because the manager is not exposed
+                if (clip.currentFrame === clip._frameToStopAt || clip._hasStopAt(clip.currentFrame)) {
+                    clip.stop();
+                }
+            }
+
+            //Repeat
+            this._timeout = setTimeout($.proxy(this._update, this), 1000 / this._frameRate);
+        }
+        
+    };
+    
+    /**
+        @description    Because we only want 1 timeout for any number of clips that are running at the same framerate,
+                        we handle the updating of playing clips in this manager so for any number of clips that are running the same
+                        framerate, only 1 timeout will be running.
+    */
+    var TimeoutManager = (function () {
+        
+        var _timeouts = {};
+
+        /**
+            @public
+            @static
+            @description    Registers a clip for updating
+        */
+        function register (clip) {
+           
+            var frameRate = clip.frameRate;
+            
+            //If no timeout is running for given framerate, create a new instance of Timeout that will handle updating
+            //of all registered clips at that framerate
+            if (!(_timeouts[frameRate] instanceof Timeout)) {
+                _timeouts[frameRate] = new Timeout(frameRate);
+            }
+            
+            //Register the clip on the timeout
+            _timeouts[frameRate].register(clip);
+        }
+
+
+        /**
+            @public
+            @static
+            @description    Unregisters a clip for updating
+            @param {SpriteClip} - The clip to unregister
+        */
+        function unregister (clip) {
+            
+            var frameRate = clip.frameRate,
+                timeout = _timeouts[frameRate];
+            
+            //If there is a timeout for the given framerate, unregister the clip
+            if (timeout instanceof Timeout) {
+
+                timeout.unregister(clip);
+                
+                //If clip was last for given frameRate, delete the reference
+                if (timeout.clips.length < 1) {
+                    delete _timeouts[frameRate];
+                }
+            }
+
+        }
+        
+        //Expose
+        return {
+            register: register,
+            unregister: unregister
+        };
+
+    }());
 
     /**
         @constructor
@@ -374,4 +588,23 @@
             }
         }
 
-    }    
+    }    ;
+    
+    //Expose on window in case we want to instantiate via the SpriteClip constructor instead of via the plugin
+    window.SpriteClip = SpriteClip;
+    window.SpriteClipEvent = SpriteClipEvent;
+
+
+    //Register as jQuery plugin
+    $.fn["spriteClip"] = function (options) {
+
+        return this.each(function() {
+            if ( ! $.data(this, "spriteClip") ) {
+                $(this).data("spriteClip", new SpriteClip(this, options));
+            }
+        });
+
+    };
+    
+    
+} (jQuery));

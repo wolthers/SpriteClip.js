@@ -37,6 +37,9 @@
 
         //Validate input to make sure we can work with what we've got
         this._validateInitialInput();
+
+        //Get the initial frames array
+        this._frames = this._getFramePositions();
     };
 
     /**
@@ -81,6 +84,7 @@
         //Private
         _timeout: undefined,
         _frameToStopAt: undefined,
+        _frames: [],
         
         /*
             
@@ -299,29 +303,11 @@
         
         /**
             @private
-            @description                    Handles the background-position shift centrally
+            @description                    Updates the UI and dispatches ENTER_FRAME
         */
         _showFrame: function (frame) {
             
-            //Calculate how far we need to move
-            var distanceToMove,
-                currentPositions = (this.$el.css("background-position") || this.$el.css("backgroundPositionX") + " " + this.$el.css("backgroundPositionY")).split(" "),
-                x,
-                y;
-
-            if (this._settings.layout === "horizontal") {
-                distanceToMove = (frame - 1) * this.frameWidth;
-                x = -distanceToMove;
-                y = parseInt(currentPositions[1], 10);
-            }
-            else {
-                distanceToMove = (frame - 1) * this.frameHeight;
-                x = parseInt(currentPositions[0], 10);
-                y = -distanceToMove;
-            }
-
-            //Set the new background position on the element
-            this.$el.css("background-position", x + "px" + " " + y + "px");
+            this.$el.css("background-position", this._frames[frame - 1]);
 
             //Dispatch SpriteClipEvent.ENTER_FRAME and send along the instance in the payload
             this.$dispatcher.triggerHandler(SpriteClip.Event.ENTER_FRAME, this);
@@ -346,6 +332,43 @@
                 }
             }
             return false;
+        },
+
+
+        /**
+            @private
+            @helper
+            @description            Gets a cached string array of the frames corresponding background-positions
+            @returns {String[]}     Returns an array of strings, where each item corresponds to the background-position of the frame
+        */
+        _getFramePositions: function () {
+
+            var frames = [],
+                len = this.totalFrames,
+                frameWidth = this.frameWidth,
+                currentPositions = (this.$el.css("background-position") || this.$el.css("backgroundPositionX") + " " + this.$el.css("backgroundPositionY")).split(" "),
+                i, x, y;
+
+            if (this._settings.layout === "horizontal") {
+
+                y = currentPositions[1];
+
+                for (i = 0; i < len; i++) {
+                    x = -i * frameWidth + "px";
+                    frames.push(x + " " + y);
+                }
+            }
+            else {
+
+                x = currentPositions[0];
+
+                for (i = 0; i < len; i++) {
+                    y = -i * frameWidth + "px";
+                    frames.push(x + " " + y);
+                }
+            }
+            
+            return frames;
         },
 
 

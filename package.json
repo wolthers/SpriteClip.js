@@ -5,7 +5,7 @@
   "contributors": [
     "Kristoffer Kjelde @stofferk http://munkey.dk/"
   ],
-  "version": "1.0.5",
+  "version": "1.0.6",
   "homepage": "http://moredots.dk/projects/spriteclip/",
   "engines": {
     "node": ">= 0.8.0"

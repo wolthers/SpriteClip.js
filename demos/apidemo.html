@@ -172,7 +172,7 @@
 
 
         //Update some stuff label every time the clip enters a new frame
-        bernard.$dispatcher.on(SpriteClip.Event.ENTER_FRAME, function () {
+        bernard.$dispatcher.on(SpriteClip.Event.ENTER_FRAME, function (e, clip) {
             
             $("#demo-properties")
                 .find(".currentFrame span").text(bernard.currentFrame).end()
@@ -182,7 +182,7 @@
         });
 
         
-        bernard.$dispatcher.on(SpriteClip.Event.PLAYING, function () {
+        bernard.$dispatcher.on(SpriteClip.Event.PLAYING, function (e, clip) {
             $("#demo-properties")
                 .find(".isPlaying span").text(bernard.isPlaying);
 
@@ -190,7 +190,7 @@
         });
 
         
-        bernard.$dispatcher.on(SpriteClip.Event.STOPPED, function () {
+        bernard.$dispatcher.on(SpriteClip.Event.STOPPED, function (e, clip) {
             $("#demo-properties")
                 .find(".isPlaying span").text(bernard.isPlaying);
 

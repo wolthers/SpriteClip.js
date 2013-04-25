@@ -1,5 +1,7 @@
 /**
     Changelog:
+    1.06
+        - In 1.06, all background-positions are cached on instantiation, so we don't need to calculate before entering a new frame. This dramatically increases performance. Inspired by Jeremy Petrequin's jsMovieclip.
     1.05
         - Now, when events are dispatched, a reference to the instance is passed along
     1.04

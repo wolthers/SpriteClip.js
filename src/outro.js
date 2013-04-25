@@ -1,7 +1,4 @@
     
-    //Expose on window in case we want to instantiate via the SpriteClip constructor instead of via the plugin
-    window.SpriteClip = SpriteClip;
-    window.SpriteClipEvent = SpriteClipEvent;
 
 
     //Register as jQuery plugin
@@ -15,5 +12,7 @@
 
     };
     
+    //Return for AMD but also expose on window in case user want to instantiate "clasically"
+    return window.SpriteClip = SpriteClip;
     
-} (jQuery));
+}));

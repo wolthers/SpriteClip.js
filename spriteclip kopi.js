@@ -1,31 +1,223 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>JSDoc: Source: SpriteClip.js</title>
-    
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
-</head>
+/**
+    Changelog:
+    1.02
+        - Renamed SpriteClipEvent.PLAY and SpriteClipEvent.STOP to .PLAYING and .STOPPED and made sure that they are dispatched like so:
+          STOPPED: when a clip is stopped completely or when a playing clip is told to play in a different direction
+          PLAYING: when a clip that isnt playing starts to play - including when a playing clip is told to play in a different direction
+        - Rewrote a lot of comments
 
-<body>
+    1.01
+        - Changed rewindToAndStop method name to rewindtoAndStop for case consistency (like as3 gotoAndStop)
+        - Changed playToAndStop method name to playtoAndStop for case consistency (like as3 gotoAndStop)
+        - Added a public read only property for layout - either "horizontal" or "vertical" that matches what was passed in via settings
+        - Added event types PLAY and STOP that are dispatched when play() and stop() are called
+*/
+(function ($) {
+    
+    "use strict";
 
-<div id="main">
-    
-    <h1 class="page-title">Source: SpriteClip.js</h1>
-    
-    
+    var SpriteClipEvent = {
+        
+        /**
+            @property {String} ENTER_FRAME - Is dispatched just after the background-position of a clip is updated
+        */
+        ENTER_FRAME: "enterFrame",
+        
+        /**
+            @property {String} PLAYING - Is dispatched by each clip when it starts to play
+                                         A special case is when a playing clip is told to play a different direction - then it will
+                                         dispatch SpriteClipEvent.STOPPED followed by SpriteClipEvent.PLAYING
+        */
+        
+        PLAYING: "playing",
+        /**
+            @property {String} STOPPED - Is dispatched by each clip when it stops playing
+                                         A special case is when a playing clip is told to play a different direction - then it will
+                                         dispatch SpriteClipEvent.STOPPED followed by SpriteClipEvent.PLAYING
+        */
+        STOPPED: "stopped"
+    };
 
 
-    
-    <section>
-        <article>
-            <pre class="prettyprint source"><code>
+    /**
+        @constructor
+        @description        Represents a timeout that runs at a given framerate
+    */
+    function Timeout (frameRate) {
+        this._frameRate = frameRate;
+        this.clips = [];
+    }
+
+    Timeout.prototype = {
+        
+        clips: undefined,
+        _frameRate: undefined,
+        _timeout: undefined,
+
+
+        /**
+            @public
+            @description    Register a clip for rendering at the instances framerate - start the timeout if clip was the first to be added
+        */
+        register: function (clip) {
+            
+            this.clips.push(clip);
+            if(this.clips.length === 1) {
+                this._start();
+            }
+
+        },
+        
+
+        /**
+            @public
+            @description    Unregister a clip for rendering - will stop the timeout if the clip was the last remaining
+        */
+        unregister: function (clip) {
+            
+
+            var clips = this.clips,
+                i = clips.length - 1;
+                
+            //Looks for the clip and remove it
+            for ( ; i >= 0 ; i-- ) {
+                if (clips[i] === clip) {
+                    clips.splice(i, 1);
+                    break;
+                }
+            }
+
+            //If removed clip was the last, kill the timeout
+            if(clips.length === 0) {
+                this._stop();
+            }
+        },
+
+
+        /**
+            @private
+            @description    Start a timeout at the instance's framerate
+        */
+        _start: function () {
+
+            this._timeout = setTimeout($.proxy(this._update, this), 1000 / this._frameRate);
+            
+        },
+
+
+        /**
+            @private
+            @description    Stops a timeout at the instance's framerate
+        */
+        _stop: function () {
+
+            //Stop and delete the timeout
+            clearTimeout(this._timeout);
+            delete this._timeout;
+        },
+
+
+        /**
+            @private
+            @description    The loop that is responsible for updating all registered clips
+        */
+        _update: function () {
+            
+            var clips = this.clips,
+                clip,
+                i = clips.length - 1;
+
+            //Render all the clips
+            for ( ; i >= 0 ; i-- ) {
+
+                //Save a refence to the current clip for performance
+                clip = clips[i];
+                
+                //Determine if clip is playing forwards or backwards
+                if (clip.currentDirection === 1) {
+                    clip.nextFrame();
+                }
+                else {
+                    clip.prevFrame();
+                }
+
+                //Check if we should stop at current frame - it's ok to access "private" properties on the clip because the manager is not exposed
+                if (clip.currentFrame === clip._frameToStopAt || clip._hasStopAt(clip.currentFrame)) {
+                    clip.stop();
+                }
+            }
+
+            //Repeat
+            this._timeout = setTimeout($.proxy(this._update, this), 1000 / this._frameRate);
+        }
+        
+    };
+
+
+    /**
+        @description    Because we only want 1 timeout for any number of clips that are running at the same framerate,
+                        we handle the updating of playing clips in this manager so for any number of clips that are running the same
+                        framerate, only 1 timeout will be running.
+    */
+    var TimeoutManager = (function () {
+        
+        var _timeouts = {};
+
+        /**
+            @public
+            @static
+            @description    Registers a clip for updating
+        */
+        function register (clip) {
+           
+            var frameRate = clip.frameRate;
+            
+            //If no timeout is running for given framerate, create a new instance of Timeout that will handle updating
+            //of all registered clips at that framerate
+            if (!(_timeouts[frameRate] instanceof Timeout)) {
+                _timeouts[frameRate] = new Timeout(frameRate);
+            }
+            
+            //Register the clip on the timeout
+            _timeouts[frameRate].register(clip);
+        }
+
+
+        /**
+            @public
+            @static
+            @description    Unregisters a clip for updating
+            @param {SpriteClip} - The clip to unregister
+        */
+        function unregister (clip) {
+            
+            var frameRate = clip.frameRate,
+                timeout = _timeouts[frameRate];
+            
+            //If there is a timeout for the given framerate, unregister the clip
+            if (timeout instanceof Timeout) {
+
+                timeout.unregister(clip);
+                
+                //If clip was last for given frameRate, delete the reference
+                if (timeout.clips.length < 1) {
+                    delete _timeouts[frameRate];
+                }
+            }
+
+        }
+        
+        //Expose
+        return {
+            register: register,
+            unregister: unregister
+        };
+
+    }());
+
+
+
+
     /**
         @constructor
         @param {HTMLElement} elem - The containing DOM node
@@ -44,7 +236,7 @@
 
         //The element HAS an eventdispatcher instead of BEING an eventdispatcher. We use a dummy jQuery element for dispatching
         //custom event because jQuery elements already have a great event system (.on, .off, .triggerHandler, .trigger etc.)
-        this.$dispatcher = $("&lt;div />");
+        this.$dispatcher = $("<div />");
 
         //Merge passed options into default settings (deep merge so references are wiped)
         this._settings = $.extend(true, {}, this._settings, options);
@@ -58,13 +250,15 @@
         //Expose layout - NB: Property is considered READ_ONLY - Changing layout after instantiation will not affect
         this.layout = this._settings.layout;
 
+
         //Use frameWidth and-height options if passed or default to the elements width/height without border
         this.frameWidth = this._settings.frameWidth || this.$elem.width() + parseInt(this.$elem.css("padding-left"), 10) + parseInt(this.$elem.css("padding-right"), 10);
         this.frameHeight = this._settings.frameHeight || this.$elem.height() + parseInt(this.$elem.css("padding-top"), 10) + parseInt(this.$elem.css("padding-bottom"), 10);
 
         //Validate input to make sure we can work with what we've got
         this._validateInitialInput();
-    };
+
+    }
     
     SpriteClip.prototype = {
         
@@ -99,9 +293,9 @@
             */
             stops: [],
             
-            /**
+            *
                 @property {String} [layout="horizontal"] - Must be either "horizontal" or "vertical" depending how the sprite sheet is laid out - Defaults to "horizontal"
-            */
+            
             layout: "horizontal",
             
             /**
@@ -220,7 +414,7 @@
         */
         nextFrame: function () {
             
-            if (this.currentFrame &lt; this.totalFrames) {
+            if (this.currentFrame < this.totalFrames) {
                 this.currentFrame += 1;
             } else {
                 this.currentFrame = 1;
@@ -248,8 +442,8 @@
         
         /**
             @public
-            @description                        Plays or rewinds the clip
-            @param {Number} [frameToStopAt=None]     Optional - The frame the clip should stop at
+            @description
+            @param {Number} [frameToStopAt]     Optional - The frame the clip should stop at
             @param {Number} [direction=1]       Optional - The direction the clip should play. Defaults to 1 (forward) if anything but -1 is passed
         */
         play: function (frameToStopAt, direction) {
@@ -370,7 +564,7 @@
             if (typeof frame !== "number") {
                 throw new Error("Argument Error: argument \"frame\" must be a number.");
             }
-            if( frame &lt; 1 || frame > this.totalFrames ) {
+            if( frame < 1 || frame > this.totalFrames ) {
                 throw new Error("Argument Error: argument \"frame\" is out of bounds.");
             }
         },
@@ -401,25 +595,25 @@
             }
         }
 
-    }    </code></pre>
-        </article>
-    </section>
+    };
+    
+    
+    
+    //Expose on window in case we want to instantiate via the SpriteClip constructor instead of via the plugin
+    window.SpriteClip = SpriteClip;
+    window.SpriteClipEvent = SpriteClipEvent;
 
 
+    //Register as jQuery plugin
+    $.fn["spriteClip"] = function (options) {
 
+        return this.each(function() {
+            if ( ! $.data(this, "spriteClip") ) {
+                $(this).data("spriteClip", new SpriteClip(this, options));
+            }
+        });
 
-</div>
-
-<nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="SpriteClip.html">SpriteClip</a></li><li><a href="Timeout.html">Timeout</a></li></ul><h3>Global</h3><ul><li><a href="global.html#TimeoutManager">TimeoutManager</a></li></ul>
-</nav>
-
-<br clear="both">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Tue Apr 23 2013 18:46:00 GMT+0200 (CEST)
-</footer>
-
-<script> prettyPrint(); </script>
-</body>
-</html>
+    };
+    
+    
+} (jQuery));

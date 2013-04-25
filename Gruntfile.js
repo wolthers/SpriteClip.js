@@ -9,7 +9,6 @@ module.exports = function(grunt) {
             dist: {
                 src: [
                     'src/intro.js',
-                    'src/SpriteClipEvent.js',
                     'src/Timeout.js',
                     'src/TimeoutManager.js',
                     'src/SpriteClip.js',
@@ -35,28 +34,14 @@ module.exports = function(grunt) {
                     'dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
                 }
             }
-        },
-        jsdoc : {
-            dist : {
-                src: [
-                    'src/SpriteClipEvent.js',
-                    'src/Timeout.js',
-                    'src/TimeoutManager.js',
-                    'src/SpriteClip.js'
-                ],
-                options: {
-                    destination: 'doc'
-                }
-            }
         }
         
     });
     
-    grunt.loadNpmTasks('grunt-contrib-uglify');    
+    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-jsdoc');
 
-    grunt.registerTask('default', ['concat', 'uglify', 'jsdoc']);
+    grunt.registerTask('default', ['concat', 'uglify']);
     
 
 };

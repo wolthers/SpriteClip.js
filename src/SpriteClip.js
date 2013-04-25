@@ -1,3 +1,5 @@
+    
+
 
     /**
         @constructor
@@ -12,8 +14,8 @@
         }
         
         //Save a reference to the dom element and jquery-wrapped dom element
-        this.elem = element;
-        this.$elem = $(element);
+        this.el = element;
+        this.$el = $(element);
 
         //The element HAS an eventdispatcher instead of BEING an eventdispatcher. We use a dummy jQuery element for dispatching
         //custom event because jQuery elements already have a great event system (.on, .off, .triggerHandler, .trigger etc.)
@@ -32,13 +34,42 @@
         this.layout = this._settings.layout;
 
         //Use frameWidth and-height options if passed or default to the elements width/height without border
-        this.frameWidth = this._settings.frameWidth || this.$elem.width() + parseInt(this.$elem.css("padding-left"), 10) + parseInt(this.$elem.css("padding-right"), 10);
-        this.frameHeight = this._settings.frameHeight || this.$elem.height() + parseInt(this.$elem.css("padding-top"), 10) + parseInt(this.$elem.css("padding-bottom"), 10);
+        this.frameWidth = this._settings.frameWidth || this.$el.width() + parseInt(this.$el.css("padding-left"), 10) + parseInt(this.$el.css("padding-right"), 10);
+        this.frameHeight = this._settings.frameHeight || this.$el.height() + parseInt(this.$el.css("padding-top"), 10) + parseInt(this.$el.css("padding-bottom"), 10);
 
         //Validate input to make sure we can work with what we've got
         this._validateInitialInput();
     };
+
+
+
+    /**
+        @static
+    */
+    SpriteClip.Event = {
+        
+        /**
+            @property {String} ENTER_FRAME - Is dispatched just after the background-position of a clip is updated
+        */
+        ENTER_FRAME: "enterFrame",
+        
+        /**
+            @property {String} PLAYING - Is dispatched by each clip when it starts to play
+                                         A special case is when a playing clip is told to play a different direction - then it will
+                                         dispatch SpriteClip.Event.STOPPED followed by SpriteClip.Event.PLAYING
+        */
+        
+        PLAYING: "playing",
+        /**
+            @property {String} STOPPED - Is dispatched by each clip when it stops playing
+                                         A special case is when a playing clip is told to play a different direction - then it will
+                                         dispatch SpriteClip.Event.STOPPED followed by SpriteClip.Event.PLAYING
+        */
+        STOPPED: "stopped"
+    };
+
     
+
     SpriteClip.prototype = {
         
         //Public - init stuff we are going to need as undefined for performance
@@ -56,6 +87,9 @@
         _timeout: undefined,
         _frameToStopAt: undefined,
         
+        /*
+            
+        */
         _settings: {
             /**
                 @property {Integer} totalFrames - Required - The number of frames the sprite and thereby the animation contains. All frames must be equally spaced in the sprite.
@@ -221,12 +255,12 @@
         
         /**
             @public
-            @description                        Plays or rewinds the clip
-            @param {Number} [frameToStopAt=None]     Optional - The frame the clip should stop at
-            @param {Number} [direction=1]       Optional - The direction the clip should play. Defaults to 1 (forward) if anything but -1 is passed
+            @description                            Plays or rewinds the clip
+            @param {Number} [frameToStopAt=None]    Optional - The frame the clip should stop at
+            @param {Number} [direction=1]           Optional - The direction the clip should play. Defaults to 1 (forward) if anything but -1 is passed
         */
         play: function (frameToStopAt, direction) {
-                
+            
             //Default to 1
             direction = direction === -1 ? -1 : 1;
 
@@ -242,7 +276,7 @@
             if (!this.isPlaying) {
                 TimeoutManager.register(this);
                 this.isPlaying = true;
-                this.$dispatcher.triggerHandler(SpriteClipEvent.PLAYING);
+                this.$dispatcher.triggerHandler(SpriteClip.Event.PLAYING);
             }
 
         },
@@ -269,7 +303,7 @@
             if (this.isPlaying) {
                 TimeoutManager.unregister(this);
                 this.isPlaying = false;
-                this.$dispatcher.triggerHandler(SpriteClipEvent.STOPPED);
+                this.$dispatcher.triggerHandler(SpriteClip.Event.STOPPED);
             }
 
         },
@@ -284,7 +318,7 @@
             
             //Calculate how far we need to move
             var distanceToMove,
-                currentPositions = (this.$elem.css("background-position") || this.$elem.css("backgroundPositionX") + " " + this.$elem.css("backgroundPositionY")).split(" "),
+                currentPositions = (this.$el.css("background-position") || this.$el.css("backgroundPositionX") + " " + this.$el.css("backgroundPositionY")).split(" "),
                 x,
                 y;
 
@@ -300,17 +334,14 @@
             }
 
             //Set the new background position on the element
-            this.$elem.css("background-position", x + "px" + " " + y + "px");
+            this.$el.css("background-position", x + "px" + " " + y + "px");
 
             //Trigger all eventhandlers bound to the ENTER_FRAME event
-            this.$dispatcher.triggerHandler(SpriteClipEvent.ENTER_FRAME);
+            this.$dispatcher.triggerHandler(SpriteClip.Event.ENTER_FRAME);
         },
         
 
        
-
-
-        
         /**
             @private
             @helper
@@ -367,11 +398,10 @@
                 throw new Error("options proberty \"totalFrames\" must be a number");
             }
             if (this._settings.layout === "horizontal" && isNaN(this.frameWidth)) {
-                throw new Error("this.frameWidth is not a number. Make sure this.$elem.width() is a Number when we instantiate or pass an explicit value in options.");
+                throw new Error("this.frameWidth is not a number. Make sure this.$el.width() is a Number when we instantiate or pass an explicit value in options.");
             }
             else if (this._settings.layout === "vertical" && isNaN(this.frameHeight)) {
-                throw new Error("this.frameHeight is not a number. Make sure this.$elem.height() is a Number when we instantiate or pass an explicit value in options.");
+                throw new Error("this.frameHeight is not a number. Make sure this.$el.height() is a Number when we instantiate or pass an explicit value in options.");
             }
         }
-
-    }    
+    }   

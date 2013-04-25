@@ -5,7 +5,7 @@
   "contributors": [
     "Kristoffer Kjelde @stofferk http://munkey.dk/"
   ],
-  "version": "1.0.3",
+  "version": "1.0.4",
   "homepage": "http://moredots.dk/projects/spriteclip/",
   "engines": {
     "node": ">= 0.8.0"
@@ -23,7 +23,6 @@
   "devDependencies": {
     "grunt-contrib-concat": "0.2.0",
     "grunt-contrib-uglify": "0.2.0",
-    "grunt": "0.4.1",
-    "grunt-jsdoc": "~0.3.2"
+    "grunt": "0.4.1"
   }
 }

@@ -1,5 +1,13 @@
 /**
     Changelog:
+    1.04
+        - Fixed demos so they work with the new project architecture - also updated to jQuery 1.9.1
+        - Added AMD factory
+        - Moved SpriteClipEvent so it is no longer global. It is now a static member of SpriteClip and is accessed via SpriteClip.Event.ENTER_FRAME, SpriteClip.Event.PLAYING etc. 
+        - Removed docs as the output was ugly - will replace with another doc library once researched
+    1.03
+        - Split the project into seperate classes
+        - Added grunt to build the project - To begin with uglification, concatenation and jsdoc3 - see docs folder for documentation
     1.02
         - Renamed SpriteClipEvent.PLAY and SpriteClipEvent.STOP to .PLAYING and .STOPPED and made sure that they are dispatched like so:
           STOPPED: when a clip is stopped completely or when a playing clip is told to play in a different direction
@@ -12,31 +20,20 @@
         - Added a public read only property for layout - either "horizontal" or "vertical" that matches what was passed in via settings
         - Added event types PLAY and STOP that are dispatched when play() and stop() are called
 */
-(function ($) {
+(function (factory) {
+    if (typeof define === "function" && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(["jquery"], factory);
+    } else {
+        // Browser globals
+        factory(jQuery);
+    }
+}(function ($) {
     
+    //Force EC5 strict mode
     "use strict";
     
-    var SpriteClipEvent = {
-        
-        /**
-            @property {String} ENTER_FRAME - Is dispatched just after the background-position of a clip is updated
-        */
-        ENTER_FRAME: "enterFrame",
-        
-        /**
-            @property {String} PLAYING - Is dispatched by each clip when it starts to play
-                                         A special case is when a playing clip is told to play a different direction - then it will
-                                         dispatch SpriteClipEvent.STOPPED followed by SpriteClipEvent.PLAYING
-        */
-        
-        PLAYING: "playing",
-        /**
-            @property {String} STOPPED - Is dispatched by each clip when it stops playing
-                                         A special case is when a playing clip is told to play a different direction - then it will
-                                         dispatch SpriteClipEvent.STOPPED followed by SpriteClipEvent.PLAYING
-        */
-        STOPPED: "stopped"
-    };
+
 
     /**
         @constructor
@@ -46,6 +43,8 @@
         this._frameRate = frameRate;
         this.clips = [];
     }
+
+    
 
     Timeout.prototype = {
         
@@ -149,8 +148,9 @@
             //Repeat
             this._timeout = setTimeout($.proxy(this._update, this), 1000 / this._frameRate);
         }
-        
     };
+    
+
     
     /**
         @description    Because we only want 1 timeout for any number of clips that are running at the same framerate,
@@ -212,6 +212,8 @@
         };
 
     }());
+    
+
 
     /**
         @constructor
@@ -226,8 +228,8 @@
         }
         
         //Save a reference to the dom element and jquery-wrapped dom element
-        this.elem = element;
-        this.$elem = $(element);
+        this.el = element;
+        this.$el = $(element);
 
         //The element HAS an eventdispatcher instead of BEING an eventdispatcher. We use a dummy jQuery element for dispatching
         //custom event because jQuery elements already have a great event system (.on, .off, .triggerHandler, .trigger etc.)
@@ -246,13 +248,42 @@
         this.layout = this._settings.layout;
 
         //Use frameWidth and-height options if passed or default to the elements width/height without border
-        this.frameWidth = this._settings.frameWidth || this.$elem.width() + parseInt(this.$elem.css("padding-left"), 10) + parseInt(this.$elem.css("padding-right"), 10);
-        this.frameHeight = this._settings.frameHeight || this.$elem.height() + parseInt(this.$elem.css("padding-top"), 10) + parseInt(this.$elem.css("padding-bottom"), 10);
+        this.frameWidth = this._settings.frameWidth || this.$el.width() + parseInt(this.$el.css("padding-left"), 10) + parseInt(this.$el.css("padding-right"), 10);
+        this.frameHeight = this._settings.frameHeight || this.$el.height() + parseInt(this.$el.css("padding-top"), 10) + parseInt(this.$el.css("padding-bottom"), 10);
 
         //Validate input to make sure we can work with what we've got
         this._validateInitialInput();
     };
+
+
+
+    /**
+        @static
+    */
+    SpriteClip.Event = {
+        
+        /**
+            @property {String} ENTER_FRAME - Is dispatched just after the background-position of a clip is updated
+        */
+        ENTER_FRAME: "enterFrame",
+        
+        /**
+            @property {String} PLAYING - Is dispatched by each clip when it starts to play
+                                         A special case is when a playing clip is told to play a different direction - then it will
+                                         dispatch SpriteClip.Event.STOPPED followed by SpriteClip.Event.PLAYING
+        */
+        
+        PLAYING: "playing",
+        /**
+            @property {String} STOPPED - Is dispatched by each clip when it stops playing
+                                         A special case is when a playing clip is told to play a different direction - then it will
+                                         dispatch SpriteClip.Event.STOPPED followed by SpriteClip.Event.PLAYING
+        */
+        STOPPED: "stopped"
+    };
+
     
+
     SpriteClip.prototype = {
         
         //Public - init stuff we are going to need as undefined for performance
@@ -270,6 +301,9 @@
         _timeout: undefined,
         _frameToStopAt: undefined,
         
+        /*
+            
+        */
         _settings: {
             /**
                 @property {Integer} totalFrames - Required - The number of frames the sprite and thereby the animation contains. All frames must be equally spaced in the sprite.
@@ -435,12 +469,12 @@
         
         /**
             @public
-            @description                        Plays or rewinds the clip
-            @param {Number} [frameToStopAt=None]     Optional - The frame the clip should stop at
-            @param {Number} [direction=1]       Optional - The direction the clip should play. Defaults to 1 (forward) if anything but -1 is passed
+            @description                            Plays or rewinds the clip
+            @param {Number} [frameToStopAt=None]    Optional - The frame the clip should stop at
+            @param {Number} [direction=1]           Optional - The direction the clip should play. Defaults to 1 (forward) if anything but -1 is passed
         */
         play: function (frameToStopAt, direction) {
-                
+            
             //Default to 1
             direction = direction === -1 ? -1 : 1;
 
@@ -456,7 +490,7 @@
             if (!this.isPlaying) {
                 TimeoutManager.register(this);
                 this.isPlaying = true;
-                this.$dispatcher.triggerHandler(SpriteClipEvent.PLAYING);
+                this.$dispatcher.triggerHandler(SpriteClip.Event.PLAYING);
             }
 
         },
@@ -483,7 +517,7 @@
             if (this.isPlaying) {
                 TimeoutManager.unregister(this);
                 this.isPlaying = false;
-                this.$dispatcher.triggerHandler(SpriteClipEvent.STOPPED);
+                this.$dispatcher.triggerHandler(SpriteClip.Event.STOPPED);
             }
 
         },
@@ -498,7 +532,7 @@
             
             //Calculate how far we need to move
             var distanceToMove,
-                currentPositions = (this.$elem.css("background-position") || this.$elem.css("backgroundPositionX") + " " + this.$elem.css("backgroundPositionY")).split(" "),
+                currentPositions = (this.$el.css("background-position") || this.$el.css("backgroundPositionX") + " " + this.$el.css("backgroundPositionY")).split(" "),
                 x,
                 y;
 
@@ -514,17 +548,14 @@
             }
 
             //Set the new background position on the element
-            this.$elem.css("background-position", x + "px" + " " + y + "px");
+            this.$el.css("background-position", x + "px" + " " + y + "px");
 
             //Trigger all eventhandlers bound to the ENTER_FRAME event
-            this.$dispatcher.triggerHandler(SpriteClipEvent.ENTER_FRAME);
+            this.$dispatcher.triggerHandler(SpriteClip.Event.ENTER_FRAME);
         },
         
 
        
-
-
-        
         /**
             @private
             @helper
@@ -581,18 +612,14 @@
                 throw new Error("options proberty \"totalFrames\" must be a number");
             }
             if (this._settings.layout === "horizontal" && isNaN(this.frameWidth)) {
-                throw new Error("this.frameWidth is not a number. Make sure this.$elem.width() is a Number when we instantiate or pass an explicit value in options.");
+                throw new Error("this.frameWidth is not a number. Make sure this.$el.width() is a Number when we instantiate or pass an explicit value in options.");
             }
             else if (this._settings.layout === "vertical" && isNaN(this.frameHeight)) {
-                throw new Error("this.frameHeight is not a number. Make sure this.$elem.height() is a Number when we instantiate or pass an explicit value in options.");
+                throw new Error("this.frameHeight is not a number. Make sure this.$el.height() is a Number when we instantiate or pass an explicit value in options.");
             }
         }
-
-    }    ;
+    }   ;
     
-    //Expose on window in case we want to instantiate via the SpriteClip constructor instead of via the plugin
-    window.SpriteClip = SpriteClip;
-    window.SpriteClipEvent = SpriteClipEvent;
 
 
     //Register as jQuery plugin
@@ -606,5 +633,7 @@
 
     };
     
+    //Return for AMD but also expose on window in case user want to instantiate "clasically"
+    return window.SpriteClip = SpriteClip;
     
-} (jQuery));
+}));

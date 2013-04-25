@@ -1,3 +1,5 @@
+    
+
 
     /**
         @constructor
@@ -7,6 +9,8 @@
         this._frameRate = frameRate;
         this.clips = [];
     }
+
+    
 
     Timeout.prototype = {
         
@@ -110,5 +114,4 @@
             //Repeat
             this._timeout = setTimeout($.proxy(this._update, this), 1000 / this._frameRate);
         }
-        
     }

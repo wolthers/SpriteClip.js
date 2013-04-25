@@ -92,7 +92,7 @@ Performance:
 - Only 1 timeout pr. frameRate:
 When a clip is played/stopped, it is registered/unregistered in a central timeout manager, which is responsible for updating all playing clips. This means that if we have 5 clips playing at 20 fps, and 5 at 30 fps, only 2 timeouts are running. One every 20th of a second and one every 30th.
 - Cached frame positions:
-- In 1.06, all background-positions are cached on instantiation, so we don't need to calculate before entering a new frame. This dramatically increases performance. Inspired by Jeremy Petrequin's jsMovieclip
+In 1.06, all background-positions are cached on instantiation, so we don't need to calculate before entering a new frame. This dramatically increases performance. Inspired by Jeremy Petrequin's jsMovieclip
 
 
 

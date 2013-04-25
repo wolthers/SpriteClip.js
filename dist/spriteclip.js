@@ -284,8 +284,8 @@
     SpriteClip.prototype = {
         
         //Public - init stuff we are going to need as undefined for performance
-        elem: undefined,
-        $elem: undefined,
+        el: undefined,
+        $el: undefined,
         $dispatcher: undefined,
         totalFrames: undefined,
         frameRate: undefined,

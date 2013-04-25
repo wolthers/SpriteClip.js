@@ -1,6 +1,4 @@
     
-
-    
     /**
         @description    Because we only want 1 timeout for any number of clips that are running at the same framerate,
                         we handle the updating of playing clips in this manager so for any number of clips that are running the same
@@ -53,6 +51,7 @@
             }
 
         }
+        
         
         //Expose
         return {

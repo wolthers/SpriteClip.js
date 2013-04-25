@@ -1,6 +1,4 @@
     
-
-
     /**
         @constructor
         @description        Represents a timeout that runs at a given framerate
@@ -9,8 +7,6 @@
         this._frameRate = frameRate;
         this.clips = [];
     }
-
-    
 
     Timeout.prototype = {
         
@@ -38,7 +34,6 @@
             @description    Unregister a clip for rendering - will stop the timeout if the clip was the last remaining
         */
         unregister: function (clip) {
-            
 
             var clips = this.clips,
                 i = clips.length - 1;

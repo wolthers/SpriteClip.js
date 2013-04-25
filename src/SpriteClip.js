@@ -1,6 +1,4 @@
     
-
-
     /**
         @constructor
         @param {HTMLElement} elem - The containing DOM node
@@ -41,8 +39,6 @@
         this._validateInitialInput();
     };
 
-
-
     /**
         @static
         @description    Autocomplete for events.
@@ -68,8 +64,6 @@
         */
         STOPPED: "stopped"
     };
-
-    
 
     SpriteClip.prototype = {
         
@@ -125,7 +119,6 @@
         },
         
         
-
         /**
             @public
             @description                    Setter for the stops array - overrides this._settings.stops if passed
@@ -148,7 +141,6 @@
         },
 
 
-
         /**
             @public
             @description                    Jumps to a given frame and plays from there
@@ -164,7 +156,6 @@
         },
 
 
-
         /**
             @public
             @description                    Jumps to a given frame and stops
@@ -177,7 +168,6 @@
             this._showFrame(frame);
             this.stop();
         },
-        
         
 
         /**
@@ -194,7 +184,6 @@
             this.rewind();
         },
         
-        
 
         /**
             @public
@@ -207,7 +196,6 @@
             this.play(frame, 1);
         },
         
-
         
         /**
             @public
@@ -219,7 +207,6 @@
             this._validateFrameInput(frame);
             this.play(frame, -1);
         },
-
 
         
         /**
@@ -237,7 +224,6 @@
         },
         
         
-
         /**
             @public
             @description                    Shows previous frame
@@ -252,7 +238,6 @@
             this._showFrame(this.currentFrame);
         },
 
-        
         
         /**
             @public
@@ -285,7 +270,6 @@
         },
         
         
-
         /**
             @public
             @description                    Plays the animation backwards
@@ -294,7 +278,6 @@
 
             this.play(undefined, -1);
         },
-       
         
         
         /**
@@ -313,7 +296,6 @@
 
         },
         
-
         
         /**
             @private
@@ -337,16 +319,15 @@
                 x = parseInt(currentPositions[0], 10);
                 y = -distanceToMove;
             }
-            
+
             //Set the new background position on the element
             this.$el.css("background-position", x + "px" + " " + y + "px");
-            
+
             //Dispatch SpriteClipEvent.ENTER_FRAME and send along the instance in the payload
             this.$dispatcher.triggerHandler(SpriteClip.Event.ENTER_FRAME, this);
         },
         
 
-       
         /**
             @private
             @helper
@@ -368,7 +349,6 @@
         },
 
 
-
         /**
             @private
             @helper
@@ -383,7 +363,6 @@
                 throw new Error("Argument Error: argument \"frame\" is out of bounds.");
             }
         },
-
 
 
         /**
@@ -409,4 +388,4 @@
                 throw new Error("this.frameHeight is not a number. Make sure this.$el.height() is a Number when we instantiate or pass an explicit value in options.");
             }
         }
-    }   
+    }

@@ -1,6 +1,4 @@
     
-
-
     //Register as jQuery plugin
     $.fn["spriteClip"] = function (options) {
 

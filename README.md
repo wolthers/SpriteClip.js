@@ -74,7 +74,7 @@ Events:
 Each instance HAS an eventdispatcher attached instead of BEING an eventdispatcher. This means that you subscribe to the instance's events through it's $dispatcher property. The $dispatcher is nothing but a dummy jQuery element that isn't attached to the DOM, which we use because jQuery has a great event system built in with methods like .on(), .off(), .trigger() and .triggerHandler() 
 	
 	//Events that can be subscribed to are ENTER_FRAME, STOPPED and PLAYING
-	clip.$dispatcher.on(SpriteClip.Event.ENTER_FRAME, function() {
+	clip.$dispatcher.on(SpriteClip.Event.ENTER_FRAME, function(e, clip) {
 		//Stuff that should be done every time a new frame is shown
 	});
 

@@ -1,5 +1,7 @@
 /**
     Changelog:
+    1.05
+        - Now, when events are dispatched, a reference to the instance is passed along
     1.04
         - Fixed demos so they work with the new project architecture - also updated to jQuery 1.9.1
         - Added AMD factory
@@ -259,6 +261,7 @@
 
     /**
         @static
+        @description    Autocomplete for events.
     */
     SpriteClip.Event = {
         
@@ -474,7 +477,7 @@
             @param {Number} [direction=1]           Optional - The direction the clip should play. Defaults to 1 (forward) if anything but -1 is passed
         */
         play: function (frameToStopAt, direction) {
-            
+
             //Default to 1
             direction = direction === -1 ? -1 : 1;
 
@@ -490,7 +493,9 @@
             if (!this.isPlaying) {
                 TimeoutManager.register(this);
                 this.isPlaying = true;
-                this.$dispatcher.triggerHandler(SpriteClip.Event.PLAYING);
+
+                //Dispatch SpriteClipEvent.PLAYING and send along the instance in the payload
+                this.$dispatcher.triggerHandler(SpriteClip.Event.PLAYING, this);
             }
 
         },
@@ -517,7 +522,9 @@
             if (this.isPlaying) {
                 TimeoutManager.unregister(this);
                 this.isPlaying = false;
-                this.$dispatcher.triggerHandler(SpriteClip.Event.STOPPED);
+
+                //Dispatch SpriteClipEvent.STOPPED and send along the instance in the payload
+                this.$dispatcher.triggerHandler(SpriteClip.Event.STOPPED, this);
             }
 
         },
@@ -546,12 +553,12 @@
                 x = parseInt(currentPositions[0], 10);
                 y = -distanceToMove;
             }
-
+            
             //Set the new background position on the element
             this.$el.css("background-position", x + "px" + " " + y + "px");
-
-            //Trigger all eventhandlers bound to the ENTER_FRAME event
-            this.$dispatcher.triggerHandler(SpriteClip.Event.ENTER_FRAME);
+            
+            //Dispatch SpriteClipEvent.ENTER_FRAME and send along the instance in the payload
+            this.$dispatcher.triggerHandler(SpriteClip.Event.ENTER_FRAME, this);
         },
         
 

@@ -1,5 +1,7 @@
 /**
     Changelog:
+    1.05
+        - Now, when events are dispatched, a reference to the instance is passed along
     1.04
         - Fixed demos so they work with the new project architecture - also updated to jQuery 1.9.1
         - Added AMD factory

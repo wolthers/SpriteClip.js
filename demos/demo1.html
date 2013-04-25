@@ -63,6 +63,7 @@
 
             instance.$dispatcher
                 .on(SpriteClip.Event.ENTER_FRAME, function () {
+                    console.log(arguments)
                     $(".currentFrame span").text(instance.currentFrame);
                 });
         </script>

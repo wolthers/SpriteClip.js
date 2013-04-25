@@ -89,3 +89,28 @@ Performance:
 -----------
 - Only 1 timeout pr. frameRate:
 When a clip is played/stopped, it is registered/unregistered in a central timeout manager, which is responsible for updating all playing clips. This means that if we have 5 clips playing at 20 fps, and 5 at 30 fps, only 2 timeouts are running. One every 20th of a second and one every 30th.
+
+
+How to build your own version of SpriteClip:
+-----------
+First, clone a copy of the SpriteClip git repo by running:
+
+	git clone git://github.com/wolthers/SpriteClip.js.git
+
+Install the grunt-cli package so that you will have the correct version of grunt available from any project that needs it. This should be done as a global install:
+
+	npm install -g grunt-cli
+
+Enter the SpriteClip directory and install the Node dependencies, this time without specifying a global install:
+
+	cd {SpriteClip directory} && npm install
+
+Make sure you have grunt installed by testing:
+
+	grunt -version
+
+Then, to get a complete, uglifyed, concatenated version of SpriteClip, type the following:
+
+	grunt
+
+The concatenated version of SpriteClip will be put in the dist/ subdirectory, along with the uglifyed version.

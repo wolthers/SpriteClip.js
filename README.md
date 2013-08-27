@@ -96,6 +96,12 @@ In 1.06, all background-positions are cached on instantiation, so we don't need 
 
 
 
+Support:
+-----------
+IE6+ and all modern browsers.
+jQuery 1.6+
+
+
 Building:
 -----------
 First, clone a copy of the SpriteClip git repo by running:

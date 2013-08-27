@@ -1,5 +1,7 @@
 /**
     Changelog:
+    1.0.7
+        - Fixed a problem with calculating frame positions when layout is vertical.
     1.0.6
         - In 1.06, all background-positions are cached on instantiation, so we don't need to calculate before entering a new frame. This dramatically increases performance. Inspired by Jeremy Petrequin's jsMovieclip.
     1.0.5

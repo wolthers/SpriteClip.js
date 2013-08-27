@@ -36,7 +36,7 @@
     }
 }(function ($) {
     
-    //Force EC5 strict mode
+    //Force ES5 strict mode
     "use strict";
 
 

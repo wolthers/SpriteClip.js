@@ -344,17 +344,18 @@
         _getFramePositions: function () {
 
             var frames = [],
-                len = this.totalFrames,
-                frameWidth = this.frameWidth,
                 currentPositions = (this.$el.css("background-position") || this.$el.css("backgroundPositionX") + " " + this.$el.css("backgroundPositionY")).split(" "),
-                i, x, y;
+                i = 0, 
+                len = this.totalFrames, 
+                x, 
+                y;
 
             if (this._settings.layout === "horizontal") {
 
                 y = currentPositions[1];
 
-                for (i = 0; i < len; i++) {
-                    x = -i * frameWidth + "px";
+                for (; i < len; i++) {
+                    x = -i * this.frameWidth + "px";
                     frames.push(x + " " + y);
                 }
             }
@@ -362,8 +363,8 @@
 
                 x = currentPositions[0];
 
-                for (i = 0; i < len; i++) {
-                    y = -i * frameWidth + "px";
+                for (; i < len; i++) {
+                    y = -i * this.frameHeight + "px";
                     frames.push(x + " " + y);
                 }
             }

@@ -82,7 +82,7 @@ Each instance HAS an eventdispatcher attached instead of BEING an eventdispatche
 
 Demos:
 -----------
-- Detailed API demo: <a href="http://wolthers.github.io/SpriteClip.js/demos/" target="_blank">http://wolthers.github.io/SpriteClip.js/demos/</a>
+- Detailed API demo: <a href="http://wolthers.github.io/SpriteClip.js/demos/apidemo.html" target="_blank">http://wolthers.github.io/SpriteClip.js/demos/apidemo.html</a>
 - The rallyinteractive rollovers implemented in spriteclip.js: <a href="http://wolthers.github.io/SpriteClip.js/demos/demo1.html" target="_blank">http://wolthers.github.io/SpriteClip.js/demos/demo1.html</a>
 
 

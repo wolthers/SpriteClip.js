@@ -1,0 +1,175 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Spriteclip.js by wolthers</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Spriteclip.js</h1>
+        <p>Frame-by-frame animations in JS made easy by using an interface similar to AS3&#39;s MovieClip</p>
+
+        <p class="view"><a href="https://github.com/wolthers/SpriteClip.js">View the Project on GitHub <small>wolthers/SpriteClip.js</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/wolthers/SpriteClip.js/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/wolthers/SpriteClip.js/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/wolthers/SpriteClip.js">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="spriteclipjs" class="anchor" href="#spriteclipjs"><span class="octicon octicon-link"></span></a>SpriteClip.js</h1>
+
+<p>Frame-by-frame animations in JS made easy by using an interface similar to AS3's MovieClip.</p>
+
+<h2>
+<a name="overview" class="anchor" href="#overview"><span class="octicon octicon-link"></span></a>Overview:</h2>
+
+<p>SpriteClip.js is a jQuery plugin that makes it easy to make snazzy frame-by-frame animations like <a href="http://moredots.dk/projects/spriteclip/demos/demo1.html" target="_blank">this</a> by emulating the functionality of the MovieClip class in ActionScript 3.0.</p>
+
+<p>It works by animating the background-image property of a dom node where the "frames" are spaced out equally. Eg. if the sprite is laid out horizontally and each frame is 20px wide, frame 1 will be at background-position: 0 0 and frame 2 will be at background-position: -20px 0</p>
+
+<p>Once instantiated, you get access to an instance with familiar methods, properties and events like:</p>
+
+<pre><code>clip.play();
+clip.stop();
+clip.gotoAndPlay();
+clip.gotoAndStop();
+clip.nextFrame();
+clip.prevFrame();
+
+clip.currentFrame
+clip.totalFrames
+clip.frameRate
+
+SpriteClip.Event.ENTER_FRAME (dispatched through clip.$dispatcher)
+</code></pre>
+
+<p>.. Plus extra sugar like:</p>
+
+<pre><code>clip.playtoAndStop();
+clip.gotoAndRewind();
+clip.rewind();
+clip.rewindtoAndStop();
+
+clip.isPlaying
+
+SpriteClip.Event.PLAYING (dispatched through clip.$dispatcher)
+SpriteClip.Event.STOPPED (dispatched through clip.$dispatcher)
+</code></pre>
+
+<h2>
+<a name="background" class="anchor" href="#background"><span class="octicon octicon-link"></span></a>Background:</h2>
+
+<p>The project was inspired by the neat rollovers on <a href="http://rallyinteractive.com" target="_blank"></a><a href="http://rallyinteractive.com">http://rallyinteractive.com</a>, that prompted me to think that the reason that you almost never see these awesome yet relatively simple animations that were so common in the flash days, must be that the tools for creating them in Javascript were none existant.</p>
+
+<p>I thought that a MovieClip class in Javascript would be a great base as that is the very first class you learn to work with in Flash and hence the learning curve would be flat for as many developers as possible. That is also why I have aimed to make an interface that is as consistent with the flash interface as possible and only added a few commonly used methods and properties like rewind() and isPlaying. Further additions can then easily be made in an class that inherits from SpriteClip.</p>
+
+<h2>
+<a name="instantiation" class="anchor" href="#instantiation"><span class="octicon octicon-link"></span></a>Instantiation:</h2>
+
+<p>The SpriteClip object is exposed as a jQuery plugin but all logic is kept in a classic object. This means that you can choose to instantiate either via the plugin or via the SpriteClip constructor. </p>
+
+<p>If you instantiate via the plugin, the instance is stored in the jQuery elements data-spriteClip attribute so that later, it can easily be retrieved through the DOM. Note the lowercase s.</p>
+
+<pre><code>var options = {
+        totalFrames: 6,         //Required - the number of frames in the sprite
+        frameRate: 30,          //Optional - the framerate the clip should play at
+        frameWidth: 35,         //Optional - width of each frame - defaults to elements width + padding - border
+        frameHeight: 100,       //Optional - height of each frame - defaults to elements height + padding - border
+        layout: "horizontal",   //Optional - the layout of the sprite - "horizontal" or "vertical"
+        stops: []               //Optional - an array of frames to always stop at - can be set with the stops method
+     },
+     clip;
+
+//Call the plugin
+$("#domElement").spriteClip(options);
+clip = $("#domElement").data("spriteClip");
+
+//Equivalent to:
+clip = new SpriteClip(document.getElementById("domElement"), options);
+</code></pre>
+
+<h2>
+<a name="events" class="anchor" href="#events"><span class="octicon octicon-link"></span></a>Events:</h2>
+
+<p>Each instance HAS an eventdispatcher attached instead of BEING an eventdispatcher. This means that you subscribe to the instance's events through it's $dispatcher property. The $dispatcher is nothing but a dummy jQuery element that isn't attached to the DOM, which we use because jQuery has a great event system built in with methods like .on(), .off(), .trigger() and .triggerHandler() </p>
+
+<pre><code>//Events that can be subscribed to are ENTER_FRAME, STOPPED and PLAYING
+clip.$dispatcher.on(SpriteClip.Event.ENTER_FRAME, function(e, clip) {
+    //Stuff that should be done every time a new frame is shown
+});
+</code></pre>
+
+<h2>
+<a name="demos" class="anchor" href="#demos"><span class="octicon octicon-link"></span></a>Demos:</h2>
+
+<ul>
+<li>Detailed API demo: <a href="http://moredots.dk/projects/spriteclip/demos/apidemo.html" target="_blank">moredots.dk/projects/spriteclip/demos/apidemo.html</a>
+</li>
+<li>The rallyinteractive rollovers implemented in spriteclip.js: <a href="http://moredots.dk/projects/spriteclip/demos/demo1.html" target="_blank">moredots.dk/projects/spriteclip/demos/demo1.html</a>
+</li>
+</ul><h2>
+<a name="performance" class="anchor" href="#performance"><span class="octicon octicon-link"></span></a>Performance:</h2>
+
+<ul>
+<li>Only 1 timeout pr. frameRate:
+When a clip is played/stopped, it is registered/unregistered in a central timeout manager, which is responsible for updating all playing clips. This means that if we have 5 clips playing at 20 fps, and 5 at 30 fps, only 2 timeouts are running. One every 20th of a second and one every 30th.</li>
+<li>Cached frame positions:
+In 1.06, all background-positions are cached on instantiation, so we don't need to calculate before entering a new frame. This dramatically increases performance. Inspired by Jeremy Petrequin's jsMovieclip</li>
+</ul><h2>
+<a name="support" class="anchor" href="#support"><span class="octicon octicon-link"></span></a>Support:</h2>
+
+<p>IE6+ and all modern browsers.
+jQuery 1.6+</p>
+
+<h2>
+<a name="building" class="anchor" href="#building"><span class="octicon octicon-link"></span></a>Building:</h2>
+
+<p>First, clone a copy of the SpriteClip git repo by running:</p>
+
+<pre><code>git clone git://github.com/wolthers/SpriteClip.js.git
+</code></pre>
+
+<p>Install the grunt-cli package so that you will have the correct version of grunt available from any project that needs it. This should be done as a global install:</p>
+
+<pre><code>npm install -g grunt-cli
+</code></pre>
+
+<p>Enter the SpriteClip directory and install the Node dependencies, this time without specifying a global install:</p>
+
+<pre><code>cd {SpriteClip directory} &amp;&amp; npm install
+</code></pre>
+
+<p>Make sure you have grunt installed by testing:</p>
+
+<pre><code>grunt -version
+</code></pre>
+
+<p>Then, to get a complete, uglifyed, concatenated version of SpriteClip, type the following:</p>
+
+<pre><code>grunt
+</code></pre>
+
+<p>The concatenated version of SpriteClip will be put in the dist/ subdirectory, along with the uglifyed version.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/wolthers">wolthers</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>

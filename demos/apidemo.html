@@ -1,0 +1,219 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <title>spriteclip.js - Simple API demo</title>
+
+    <link rel="stylesheet" href="css/base.css">
+
+    <style>
+
+        a {
+            color: blue;
+            text-decoration: underline;
+        }
+
+        #demo-illustration {
+            position: relative;
+            height: 100px;
+        }
+
+        #bernard,
+        #bernard-greyed {
+            height: 100px;
+            width: 35px;
+            position: absolute;
+            left: 180px;
+            border: 1px solid transparent;
+        }
+        #bernard {
+            z-index: 1;
+            border-color: #ccc;
+            background: url("img/bernard.png") no-repeat 0 0;
+        }
+        #bernard-greyed {
+            background: url("img/bernard-greyed.png") no-repeat 0 0;
+            width: 210px;
+            position: absolute;
+            
+        }
+        #bernard-greyed .greyed {
+            display: block;
+            height: 100px;
+            background-color: rgba(255, 255, 255, .8);
+        }
+
+
+        #demo-methods {
+            overflow: hidden;
+        }
+        #demo-methods a {
+            display: block;
+            cursor: pointer;
+            float: left;
+            clear: both;
+        }
+        #demo-methods a::selection {
+            background: transparent;
+            color: inherit;
+        }
+
+        #demo-properties .currentFrame,
+        #demo-properties .frameWidth,
+        #demo-properties .frameHeight,
+        #demo-properties .isPlaying,
+        #demo-properties .totalFrames,
+        #demo-properties .frameRate {
+            display: block;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div id="demo-illustration">
+        <a id="bernard" href="img/bernard.png" target="_blank" title="Click to view the sprite sheet"></a>
+
+        <!-- The only purpose of this element is to illustrate the animation of the background-image -->
+        <a id="bernard-greyed"><span class="greyed"></span></a>
+    </div>
+
+    <div id="demo-methods">
+
+        <h3 class="subsection-heading">Methods:</h3>
+        <p>
+            <!-- Inline click binding for ease of understanding -->
+            <a onclick="javascript:bernard.play()">instance.play();</a>
+        
+            <a onclick="javascript:bernard.stop()">instance.stop();</a>
+        
+            <a onclick="javascript:bernard.rewind()">instance.rewind();</a>
+        
+            <a onclick="javascript:bernard.gotoAndPlay(5)">instance.gotoAndPlay(5);</a>
+        
+            <a onclick="javascript:bernard.gotoAndStop(3)">instance.gotoAndStop(3);</a>
+        
+            <a onclick="javascript:bernard.gotoAndRewind(6)">instance.gotoAndRewind(6);</a>
+        
+            <a onclick="javascript:bernard.playtoAndStop(5)">instance.playtoAndStop(5);</a>
+        
+            <a onclick="javascript:bernard.rewindtoAndStop(1)">instance.rewindtoAndStop(1);</a>
+        
+            <a onclick="javascript:bernard.nextFrame()">instance.nextFrame();</a>
+        
+            <a onclick="javascript:bernard.prevFrame()">instance.prevFrame();</a>
+            
+            <a onclick="javascript:bernard.stops([4])">instance.stops([4]);</a>
+            <a onclick="javascript:bernard.stops([4, 6])">instance.stops([4, 6]);</a>
+            <a onclick="javascript:bernard.stops([])">instance.stops([]);</a>
+        </p>
+    </div>
+
+    <div id="demo-properties">
+        <h3 class="subsection-heading">Properties:</h3>
+        <p>
+            <span class="currentFrame">instance.currentFrame: <span></span></span>
+            <span class="frameWidth">instance.frameWidth: <span></span></span>
+            <span class="frameHeight">instance.frameHeight: <span></span></span>
+            <span class="isPlaying">instance.isPlaying: <span></span></span>
+            <span class="frameRate">instance.frameRate: <span></span></span>
+            <span class="currentDirection">instance.currentDirection: <span></span></span>
+        </p>
+    </div>
+
+    <a href="https://github.com/wolthers/spriteclip.js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/camo.github.com/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>
+    
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="../dist/spriteclip.js"></script>
+
+    <script>
+
+        var options = {
+                //Required - {Number}
+                totalFrames: 6,
+
+                //Optional - {Number} - Default = 30 - The frames per second that the animation plays - Cannot be changed after instantiation
+                frameRate: 2,
+
+                //Optional - {Number} - Default = {elements width + padding without border} - The width of each frame. 
+                frameWidth: 35,
+                
+                //Optional - {Number} - Default = {elements height + padding without border} - The height of each frame
+                frameHeight: 100,
+
+                //Optional - {String} - Default = "horizontal" - Must be either "horizontal" or "vertical" - Determines which way the sprite is laid out
+                layout: "horizontal",
+
+                //Optional - {Array}  - Default = [] - An array of frame numbers to stop at - can be set after instantiation with the stops() method
+                stops: []
+             },
+             bernard;
+         
+        //Call the plugin
+        $("#bernard").spriteClip(options);
+        bernard = $("#bernard").data("spriteClip");
+         
+        //Equivalent to:
+        bernard = new SpriteClip(document.getElementById("bernard"), options);
+        
+
+        //Update the properties section of the demo with the values of the instance's properties
+        $("#demo-properties")
+            .find(".currentFrame span").text(bernard.currentFrame).end()
+            .find(".frameWidth span").text(bernard.frameWidth).end()
+            .find(".frameHeight span").text(bernard.frameHeight).end()
+            .find(".isPlaying span").text(bernard.isPlaying).end()
+            .find(".totalFrames span").text(bernard.totalFrames).end()
+            .find(".frameRate span").text(bernard.frameRate).end()
+            .find(".currentDirection span").text(bernard.currentDirection);
+
+
+        //Update some stuff label every time the clip enters a new frame
+        bernard.$dispatcher.on(SpriteClip.Event.ENTER_FRAME, function (e, clip) {
+            
+            $("#demo-properties")
+                .find(".currentFrame span").text(bernard.currentFrame).end()
+                .find(".currentDirection span").text(bernard.currentDirection);
+            
+            $("#bernard-greyed").css("margin-left", - (bernard.currentFrame - 1) * bernard.frameWidth);
+        });
+
+        
+        bernard.$dispatcher.on(SpriteClip.Event.PLAYING, function (e, clip) {
+            $("#demo-properties")
+                .find(".isPlaying span").text(bernard.isPlaying);
+
+            console.log("SpriteClip.Event.PLAYING fired");
+        });
+
+        
+        bernard.$dispatcher.on(SpriteClip.Event.STOPPED, function (e, clip) {
+            $("#demo-properties")
+                .find(".isPlaying span").text(bernard.isPlaying);
+
+            console.log("SpriteClip.Event.STOPPED fired");
+        });
+        
+        bernard.play();
+        //bernard.stop();
+        //bernard.rewind();
+        //bernard.gotoAndPlay(5);
+        //bernard.gotoAndStop(3);
+        //bernard.gotoAndRewind(6);
+        //bernard.playtoAndStop(5);
+        //bernard.rewindtoAndStop(1);
+        //bernard.nextFrame();
+        //bernard.prevFrame();
+        //bernard.stops([4]);
+        //bernard.stops([4, 6]);
+        //bernard.stops([]);
+
+
+    </script>
+
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+
+<!doctype html>
+<html lang="en">
+    <head>
+
+        <meta charset="utf-8">
+        <title>spriteclip.js - Simple API demo</title>
+
+        <link rel="stylesheet" href="css/base.css">
+        <style>
+
+        .awesome-button {
+            display: block;
+            width: 60px;
+            height: 60px;
+            background: url("img/rally-button.png") no-repeat 0 0;
+            margin-bottom: 1em;
+            border: 1px solid #ccc;
+        }
+            
+        </style>
+
+    </head>
+    <body>
+
+        <p>
+            Roll over the button to see the animation.<br>
+            <em>The sprite is copyrighted by <a href="http://rallyinteractive.com" target="_blank">http://rallyinteractive.com</a> and may not be replicated for own use.</em>
+        </p>
+        <a class="awesome-button"></a>
+        <p class="currentFrame">Current frame: <span>1</span></p>
+
+        <iframe class="snippet" id="snippet-1" src="snippets/demo1-snippet1.html"></iframe>
+
+        <a href="https://github.com/wolthers/spriteclip.js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/camo.github.com/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="../dist/spriteclip.js"></script>
+
+        <script>
+
+            //Instantiate and get the instance from the element's data-spriteClip property
+            var instance = $(".awesome-button").spriteClip({
+                totalFrames: 30,
+                frameRate: 60,
+                stops: [1, 30]
+            }).data("spriteClip");
+
+            //Equivalent to
+            //var instance = new SpriteClip($(".awesome-button").get(0), {
+            //    totalFrames: 30,
+            //    frameRate: 60,
+            //    stops: [1, 30]
+            //})
+            
+            instance.$el
+                .on("mouseover", function () {
+                    instance.play();
+                })
+                .on("mouseout", function () {
+                    instance.rewind();
+                });
+
+            instance.$dispatcher
+                .on(SpriteClip.Event.ENTER_FRAME, function (e, clip) {
+
+                    $(".currentFrame span").text(instance.currentFrame);
+                });
+        </script>
+
+
+    </body>
+</html>
